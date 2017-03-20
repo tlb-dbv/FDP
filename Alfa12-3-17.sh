@@ -135,32 +135,36 @@ salario() {
 	   clear
 	   while (( $sala != 0 )); do
 	   	sal
-		res=$(echo "scale=2; $din >= $salMaior" | bc)
-		if (( $res == 1 )); then
-			res=$(echo "scale=2; $din >= $salMedio" | bc)
-		fi
-			if (( $res == 1 )); then
-				res=$(echo "scale=2; $din >= $salMenor" | bc)
-			fi
+		res=$(echo "scale=2; $din >= $salMaior || $din >= $salMedio || $din >= $salMenor" | bc)
+		#if (( $res == 1 )); then
+		#	res=$(echo "scale=2; $din >= $salMedio" | bc)
+		#fi
+		#	if (( $res == 1 )); then
+		#		res=$(echo "scale=2; $din >= $salMenor" | bc)
+		#	fi
 				if (( $res == 1 )); then
 					tmp=$din
+					#echo "$res"
 				fi
-	   res=$(echo "scale=2; $tmp >= $salMaior" | bc)
+	   res=$(echo "scale=2; $tmp > $salMaior" | bc)
 	   if (( $res == 1 )); then
 	   	tmpSal=$salMaior
 		salMaior=$tmp
 	   else
-	   	tmpSal=$din
+	   	tmpSal=$tmp
 	   fi
-	   res=$(echo "scale=2; $tmpSal >= $salMedio" | bc)
+	   res=$(echo "scale=2; $tmpSal > $salMedio && $tmpSal < $salMaior" | bc)
 	   if (( $res == 1 )); then
 	   	tmp=$salMedio
 		salMedio=$tmpSal
+	   else
+		tmp=$tmpSal
 	   fi
-           res=$(echo "scale=2; $tmp >= $salMenor" | bc)
+           res=$(echo "scale=2; $tmp > $salMenor && $tmp < $salMedio" | bc)
 	   if (( $res == 1 )); then
 	   	salMenor=$tmp
 	   fi
+	   
            res=$(echo "scale=2; $din >= 0.01" | bc)
 	   if (( $res == 1 )); then
 	   	sala=1
