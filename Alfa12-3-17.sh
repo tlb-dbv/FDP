@@ -54,8 +54,8 @@ impar() {
 		N2=$N1
 		N1=$tmp
 		imprimiImpar
-		else
-			imprimiImpar
+	 else
+		imprimiImpar
 	 fi
 	}
 
@@ -113,13 +113,13 @@ menor() {
 			if (( $pri == 1 )); then
 				num=$n
 			fi
-				if (( $n == $num )); then
-					let cont=($cont+1)
-				fi
-					if (( $n < $num )); then
-						cont=1
-						num=$n	
-					fi
+			if (( $n == $num )); then
+				let cont=($cont+1)
+			fi
+			if (( $n < $num )); then
+				cont=1
+				num=$n	
+			fi
 		fi
 	 w=$n
 	 done
