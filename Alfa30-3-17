@@ -119,9 +119,9 @@ reSal() {
 	 	sal
 		res=$(echo "scale=2; $din >= 500.00" | bc)
 		if (( $res == 1 )); then
-			res=$(echo "scale=2; $din*1.2" | bc)
-		else
 			res=$(echo "scale=2; $din*1.1" | bc)
+		else
+			res=$(echo "scale=2; $din*1.2" | bc)
 		fi
 	 	clear
 		comp=$(echo "scale=2; $res > 0" | bc)
@@ -194,51 +194,42 @@ salario() {
 	   clear
 	   while (( $sala != 0 )); do
 	   	sal
-		res=$(echo "scale=2; $din >= $salMaior" | bc)
-		if (( $res == 1 )); then
-			res=$(echo "scale=2; $din >= $salMedio" | bc)
-		fi
-			if (( $res == 1 )); then
-				res=$(echo "scale=2; $din >= $salMenor" | bc)
-			fi
-				if (( $res == 1 )); then
-					tmp=$din
-				fi
-	   res=$(echo "scale=2; $tmp >= $salMaior" | bc)
-	   if (( $res == 1 )); then
-	   	tmpSal=$salMaior
-		salMaior=$tmp
-	   else
-	   	tmpSal=$din
-	   fi
-	   res=$(echo "scale=2; $tmpSal >= $salMedio" | bc)
-	   if (( $res == 1 )); then
-	   	tmp=$salMedio
-		salMedio=$tmpSal
-	   fi
-           res=$(echo "scale=2; $tmp >= $salMenor" | bc)
-	   if (( $res == 1 )); then
-	   	salMenor=$tmp
-	   fi
-           res=$(echo "scale=2; $din >= 0.01" | bc)
-	   if (( $res == 1 )); then
-	   	sala=1
-	   else
-           	sala=$din
-           fi
+		tmp=$din
+		res=$(echo "scale=2; $tmp >= $salMaior" | bc)
+	   	if (( $res == 1 )); then
+	   		tmpSal=$salMaior
+			salMaior=$tmp
+	   	else
+	   		tmpSal=$din
+	   	fi
+	   	res=$(echo "scale=2; $tmpSal >= $salMedio && $tmpSal < $salMaior" | bc)
+	   	if (( $res == 1 )); then
+	   		tmp=$salMedio
+			salMedio=$tmpSal
+	   	fi
+           	res=$(echo "scale=2; $tmp >= $salMenor && $tmp < $salMedio" | bc)
+	   	if (( $res == 1 )); then
+	   		salMenor=$tmp
+	   	fi
+           	res=$(echo "scale=2; $din >= 0.01" | bc)
+	   	if (( $res == 1 )); then
+	   		sala=1
+	   	else
+           		sala=$din
+           	fi
 	   done
 	   res=$(echo "scale=2; $salMenor > 0" | bc)
            if (( $res == 1 ));then
   	   	echo "O terceiro maior salario eh: R$ $salMenor"
            fi
 	   res=$(echo "scale=2; $salMedio > 0" | bc)    
-	   	if (( $res == 1 )); then  
- 			echo "O segundo maior salario eh: R$ $salMedio"
-		fi
+	   if (( $res == 1 )); then  
+ 		echo "O segundo maior salario eh: R$ $salMedio"
+	   fi
 	   res=$(echo "scale=2; $salMaior > 0" | bc) 
-			if (( $res == 1 )); then	
-  				echo "O maior salario eh: R$ $salMaior"
-			fi
+	   if (( $res == 1 )); then	
+  		echo "O maior salario eh: R$ $salMaior"
+	   fi
            espera
   	   salMaior=0
   	   salMedio=0
