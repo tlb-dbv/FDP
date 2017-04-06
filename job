@@ -1,0 +1,10 @@
+#!/bin/bash
+clear
+echo "Digite um numero"
+read n
+if (( $n > 10 )); then
+	echo "O valor é maior que 10"
+else
+	echo "O valor é menor que 10"
+fi
+read x
