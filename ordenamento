@@ -1,0 +1,29 @@
+#!/bin/bash
+clear
+int=1
+teste=0
+maiorOrd=0
+while (( $int != 0 )); do
+	read -p "Digite um numero" num[$teste]
+	int=${num[$teste]}
+	let teste=$teste+1
+	t=$teste
+done
+
+####
+##menor numero
+####
+	
+for (( u=0; u < $teste; u++ )); do
+	for (( y=0; y < $teste; y++ )); do
+		if (( $maiorOrd <= ${num[y]} )); then
+			maiorOrd=${num[$y]}
+			x=$y
+			maior[$t]=$maiorOrd
+		fi
+	done
+	num[$x]=0
+	let t=$t-1
+	maiorOrd=0
+done
+echo ${maior[*]}
