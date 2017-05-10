@@ -1,0 +1,43 @@
+#!/bin/bash
+
+#####################################################################
+function menu() {
+clear
+
+mn=$(dialog --stdout --title "Gerenciamento do Sistema"\
+	    --menu "Escolha uma opção" 0 0 0 	\
+1 "Gerenciar Usuários"		\
+2 "Gerenciar Grupos"		\
+3 "Gerenciar Arquivos"		\
+4 "Gerenciar Rede Local"	\
+5 "Gerenciar Dispositivos"	\
+6 "Sair")
+
+
+case $mn in
+
+1) menu1 ;;
+2) menu2 ;; 
+3) menu3 ;;
+4) menu4 ;;
+5) menu5 ;;
+6) exit ;;
+esac
+}
+menu1(){
+	dialog --stdout --msgbox "$mn" 0 0	
+}
+menu2(){
+	dialog --stdout --msgbox "$mn" 0 0	
+}
+menu3(){
+	dialog --stdout --msgbox "$mn" 0 0	
+}
+menu4(){
+	dialog --stdout --msgbox "$mn" 0 0	
+}
+menu5(){
+	dialog --stdout --msgbox "5" 0 0	
+}
+menu
+
