@@ -2,35 +2,32 @@
 clear
 int=1
 teste=0
-maiorOrd=0
 tmp=0
+
 while (( $int != 0 )); do
 	read -p "Digite um numero" num[$teste]
 	int=${num[$teste]}
 	let teste=$teste+1
 	t=$teste
-	te=$t
-	tee=$te
+	te=$teste-1
+	tee=$teste-2
 done
-	let te=$te-2
-	let tee=$tee-1
-echo ${num[$teste]}
-echo ${num[$te]}
-#for (( w=0; w < $teste; w++ )); do
-#	if (( ${num[$te]} <= ${num[$tee]} )); then
-#		menor=${num[$te]}
-#		let te=$te-1
-#	else
-#		menor=${num[$tee]}
-#		let te=$te-1
-#	fi
-#done
-echo "$menor"
-read sssss
-####
-##menor numero
-####
-	
+
+tmp=${num[$te]}
+
+for (( w=1; w < $teste; w++ )); do
+	if (( $tmp <= ${num[$tee]} )); then
+		menor=$tmp
+		let tee=$tee-1
+	else 
+		tmp=${num[$tee]}
+		menor=$tmp
+		let tee=$tee-1	
+	fi
+done
+
+maiorOrd=$menor
+let troca=$menor-1
 for (( u=0; u < $teste; u++ )); do
 	for (( y=0; y < $teste; y++ )); do
 		if (( $maiorOrd <= ${num[y]} )); then
@@ -39,8 +36,8 @@ for (( u=0; u < $teste; u++ )); do
 			maior[$t]=$maiorOrd
 		fi
 	done
-	num[$x]=0
+	num[$x]=$troca
 	let t=$t-1
-	maiorOrd=0
+	maiorOrd=$menor
 done
 echo ${maior[*]}
