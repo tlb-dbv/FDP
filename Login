@@ -1,0 +1,49 @@
+#!/bin/bash
+
+######################################
+#	   Sistema Super Alfa	     #
+#      Desenvolverdor: Grupo Alfa    #
+#   Integrantes: Alexandre, Matheus, #
+#	Sayyid, Wilson e Tarcísio    #
+#	    Professor: Thales	     #
+#	     Disciplina: FDP         #
+#		Data:		     #
+######################################
+
+usuario=Alfa
+senha=senai123
+sai=1
+
+while (( $sai != 0 )); do
+clear
+
+qnt=1
+
+while (( $qnt <= 5 )); do
+user=$(dialog --stdout  --backtitle "Sistema Super Alfa" --inputbox "Entre com o seu usuário:" --timebox\ 
+ 0 -15\
+ 10 38 00)
+
+pass=$(dialog  --stdout --backtitle "Sistema Super Alfa" --insecure --passwordbox "Entre com a sua senha:" 0 -15)
+
+if [ $user == $usuario ]; then
+	if [ $pass == $senha ]; then
+		sai=0
+		qnt=6
+		
+	else
+		dialog --msgbox "Senha incorreta !!!  " 0 -10
+
+	fi	
+
+else
+		dialog --msgbox "Usuário incorreto !!! " 0 -10
+
+fi
+
+let qnt=($qnt+1)
+done
+done
+
+dialog --backtitle "Sistema Super Alfa" --msgbox "Acesso permitido ao Sistema Super Alfa" 0 0
+
