@@ -1,0 +1,158 @@
+#!/bin/bash 
+######################## Função Menu Principal ###########################
+function menu(){
+clear
+mn=$(dialog --stdout --title "Gerenciamento do Sistema"		\
+	    --menu "Escolha uma opção" 0 0 0			\
+1 "Gerenciamento de Usuários"					\
+2 "Gerenciamento de Arquivos"					\
+3 "Gerenciamento de Rede Local"					\
+4 "Gerenciamento de Dispositivos"				\
+5 "Gerenciamento de Repositórios" 				\
+6 "Sair")
+
+case "$mn" in
+
+1)menu1;;
+#2) chamar a função grupos
+3)menu3;;
+#4) chamar a função rede local
+#5) chamar função dispositivos
+
+6)clear; #Função que apresenta a barra de progresso de finalizacao do programa 
+(
+while :
+do
+cat << EOF
+XXX
+$counter
+Finalizando Processos ( $counter% ):
+XXX
+EOF
+(( counter+=50 ))
+[ $counter == 100 ] && break
+sleep 1
+done
+) |
+dialog --title "Aguarde um momento" --gauge "Please wait" 7 70 0
+clear
+exit
+########### Fim da função da barra de progresso ########
+esac
+
+} 
+
+################ Função Menu Usuário ###########################
+function menu1(){
+clear
+mn1=$(dialog --stdout --title "O que você deseja fazer?"	\
+	     --menu "Escolha uma opção" 0 0 0			\
+1 "Criar usuário"						\
+2 "Deletar usuário"						\
+3 "Renomear usuário"						\
+4 "Listar usuários"					\
+5 "Voltar")
+
+case $mn1 in
+1)cuser ;;
+2)ruser ;;
+3)mvuser ;;
+4)lsuser ;;
+5)menu ;;
+
+esac
+} 
+######################## Função Criar Usuário ######################
+function cuser(){
+clear
+
+user=$(dialog --stdout							\
+	      --inputbox "Digite o nome do usuário a ser criado:" 0 50)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $user ]; then
+			dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo nome de usuário é obrigatório!!!" 0 0 
+			cuser
+		fi
+	else
+		menu
+	fi
+		cris
+}
+################# Solicitação da senha ###############################
+
+function cris(){
+	senha=$(dialog --stdout --insecure 		\
+		--passwordbox "Digite a senha:" 0 0 )
+		t=$?
+	if (( $t == 0 )); then
+		if [ -z $senha ]; then
+			dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo senha é obrigatório! Tente novamente!" 0 0 
+			cris
+		else
+			reps
+		fi
+	else
+		menu
+	fi
+}	
+
+reps (){
+	senha1=$(dialog --stdout --insecure 		\
+		--passwordbox "Confirme a senha:" 0 0 )
+		t=$?
+	if (( $t == 0 )); then
+		if [ -z $senha ]; then
+			dialog --aspect 45 --backtitle "Atenção" --msgbox "É obrigatório repetir a senha! Tente novamente!" 0 0 
+			reps
+		else
+			cons
+		fi
+	else
+		menu
+	fi
+
+
+
+}
+#################### Comparação das senhas ##########################
+cons (){
+	if [ $senha != "$senha1" ]; then
+		dialog --yesno "A senha informada não confere!!! \
+		Deseja tentar novamente?" 7 40
+		t=$?
+		if (( $t == 0 )); then
+			cris
+		else
+			menu 
+		fi
+	else
+		conc
+	fi
+}
+########## Solicitação da confirmação da criação do usuário ##############
+conc (){
+	dialog  --title "Confirmação"		\
+		--backtitle "Atenção"		\
+		--yesno "Você tem certeza que deseja criar o usuário "$user" ?" 7 60
+
+################# Comparação da escolha do usuário Sim ou Não  ##################
+t=$?
+dialog --msgbox "$t" 0 0 
+if [ "$t" == "0" ]; then
+
+useradd -m -d /home/$user -r -s /bin/bash $user
+(echo $senha; echo $senha) | passwd $user
+dialog	--aspect 45 --msgbox "Usuário "$user" criado com sucesso!" 0 0
+
+else
+dialog --msgbox --aspect 45 "Procedimento Cancelado!" 0 0
+menu
+fi
+
+#tail -f /etc/passwd > out &
+#dialog --title "Lista de usuários" --tailbox out 0 0
+
+}
+
+menu
