@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##############################################################################
-#                    TODAS FUNCOES DE TODOS OS MENUS                         # 
+#                    TODAS FUNCOES DE TODOS OS MENUS                         #
 ##############################################################################
 
 ########################### MENU PRINCIPAL ###################################
@@ -9,8 +9,8 @@ function mprin() {
 clear
 
 mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
-	    --menu "Escolha uma opção" 0 0 0 	\
-1 "Gerenciar Usuários"	        \
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Gerenciar Usuarios"	        \
 2 "Gerenciar Grupos"		\
 3 "Gerenciar Arquivos"		\
 4 "Gerenciar Rede Local"	\
@@ -23,7 +23,7 @@ mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
 case $mhome in
 
 1) gusur ;;
-2) ggrup ;; 
+2) ggrup ;;
 3) gfile ;;
 4) grede ;;
 5) gdisp ;;
@@ -38,7 +38,7 @@ esac
 ######################## MENU GERENCIAMENTO DE USUARIO ##########################
 gusur(){
 musur=$(dialog --stdout --title "Gerenciamento de Usuarios"\
-	    --menu "Escolha uma opção" 0 0 0 	\
+	    --menu "Escolha uma opcao" 0 0 0 	\
 1 "Criar usuarios"		\
 2 "Excluir usuarios"		\
 3 "Alterar nome do usuario"	\
@@ -48,7 +48,7 @@ musur=$(dialog --stdout --title "Gerenciamento de Usuarios"\
 		
 case $musur in
 
-1) criu ;; 
+1) criu ;;
 2) excu ;;
 3) altn ;;
 4) alts ;;
@@ -59,9 +59,9 @@ esac
 ##################### FIM DO MENU GERENCIAMENTO DE USUARIO ######################
 
 ####################### MENU GERENCIAMENTO DE GRUPOS ############################
-ggrup(){ 
+ggrup(){
 mgrup=$(dialog --stdout --title "Gerenciamento de Grupos"\
-	    --menu "Escolha uma opção" 0 0 0 \
+	    --menu "Escolha uma opcao" 0 0 0 \
 1 "Criar Grupo"			\
 2 "Excluir Grupo"		\
 3 "Adicionar Usuario no Grupo"	\
@@ -71,20 +71,20 @@ mgrup=$(dialog --stdout --title "Gerenciamento de Grupos"\
 		
 case $mgrup in
 
-1) crig ;; 
+1) crig ;;
 2) excg ;;
 3) adug ;;
 4) exug ;;
 5) lisg ;;
 6) volu ;;
-esac	
+esac
 }
 ################### FIM DO MENU GERENCIAMENTO DE GRUPOS ########################
 
 ##################### MENU GERENCIAMENTO DE ARQUIVOS ###########################
 gfile(){
 mfile=$(dialog --stdout --title "Gerenciamento de Arquivos"\
-	    --menu "Escolha uma opção" 0 0 0 	\
+	    --menu "Escolha uma opcao" 0 0 0 	\
 1 "Criar Arquivo"		\
 2 "Excluir Arquivo"		\
 3 "Movimentar Arquivo"		\
@@ -94,13 +94,13 @@ mfile=$(dialog --stdout --title "Gerenciamento de Arquivos"\
 		
 case $mfile in
 
-1) crif ;; 
+1) crif ;;
 2) excf ;;
 3) movf ;;
 4) comf ;;
 5) desf ;;
 6) volu ;;
-esac	
+esac
 	
 }
 ################## FIM DO MENU GERENCIAMENTO DE ARQUIVOS #######################
@@ -108,7 +108,7 @@ esac
 ################## MENU GERENCIAMENTO DE REDES #################################
 grede(){
 mrede=$(dialog --stdout --title "Gerenciamento de Interface de Rede"\
-	    --menu "Escolha uma opção" 0 0 0 	\
+	    --menu "Escolha uma opcao" 0 0 0 	\
 1 "Configurar IP"		 \
 2 "Configurar Mask"		 \
 3 "Configurar Gateway"		 \
@@ -119,69 +119,131 @@ mrede=$(dialog --stdout --title "Gerenciamento de Interface de Rede"\
 		
 case $mrede in
 
-1) coip ;; 
+1) coip ;;
 2) coma ;;
 3) coga ;;
 4) cobr ;;
 5) coid ;;
 6) conh ;;
 7) volu ;;
-esac	
+esac
 }
 ###################### FIM DO MENU GERENCIAMENTO DE REDES ######################
 
 ###################### MENU GERENCIAMENTO DE DISPOSITIVO #######################
 gdisp(){
-	dialog --stdout --msgbox "dispositivo" 0 0	
+	dialog --msgbox "dispositivo" 0 0
 }
 ################# FIM DO MENU GERENCIAMENTO DE DISPOSITIVO #####################
 
 ###################### MENU GERENCIAMENTO DE PACOTES ###########################
 grpto(){
-	dialog --stdout --msgbox "pacote" 0 0	
+	dialog --msgbox "pacote" 0 0
 }
 ###################### FIM MENU GERENCIAMENTO DE PACOTES #######################
 
 #################### MENU GERENCIAMENTO DE PERMISIONAMENTO #####################
 gperm(){
-	dialog --stdout --msgbox "permissionamento" 0 0	
+	dialog --msgbox "permissionamento" 0 0
 }
 ################ FIM DO MENU GERENCIAMENTO DE PERMISSIONAMENTO #################
 
 ###################### MENU GERENCIAMENTO DE PROGRAMA ##########################
 gprgm(){
-	dialog --stdout --msgbox "shell" 0 0	
+	dialog --msgbox "shell" 0 0
 }
 #################### FIM DO MENU GERENCIAMENTO DE PROGRAMA #####################
 
 
 ########################## MENU CRIACAO DE USUARIOS ############################
 criu(){
-	dialog --stdout --msgbox "1" 0 0	
+clear
+
+	user=$(dialog --stdout							\
+	      --inputbox "Digite o nome do usuario a ser criado:" 0 50)
+
+	if [ -z $user ]; then
+		dialog --aspect 45 --backtitle "Atencao" --msgbox "O campo nome de usuário é obrigatório!!!" 0 0 
+		criu
+	fi
+	cris
+###################### SOLICITACAO DA SENHA ####################################
+
+	senha=$(dialog --stdout --insecure 		\
+		--passwordbox "Digite a senha:" 0 0 )
+
+	if [ -z $senha ]; then
+		dialog --aspect 45 --backtitle "Atencao" --msgbox "O campo senha é obrigatório! Tente novamente!" 0 0 
+		if [ "$?" == "0" ]; then
+		cris
+		else
+		mprin
+		fi
+	fi
+
+	senha1=$(dialog --stdout --insecure		\
+		--passwordbox "Confirme a senha:" 0 0 )	\
+
+#################### Comparacao das senhas ##########################
+
+	if [ $senha != "$senha1" ]; then
+		dialog --yesno "A senha informada nao confere!!! \
+		Deseja tentar novamente?" 7 40
+
+		if [ "$?" == "0" ]; then
+		guser
+		else
+		guser
+		fi
+	fi
+
+########## Solicitacao da confirmacao da criacao do usuario ##############
+
+	dialog  --title "Confirmacao"		\
+		--backtitle "Atencao"		\
+	--yesno "Voce tem certeza que deseja criar o usuario "$user" ?" 7 60
+
+################# Comparacao da escolha do usuario Sim ou Nao ###############
+
+	if [ "$?" == "0" ]; then
+
+	useradd -m -d /home/$user -r -s /bin/bash $user;
+	(echo $senha; echo $senha) | passwd $user;
+	dialog	--aspect 45 --msgbox "Usuario "$user" criado com sucesso!" 0 0
+
+	else
+
+	dialog --msgbox --aspect 45 "Procedimento Cancelado!" 0 0
+
+	fi
+
+	tail -f /etc/passwd > out &
+	dialog --title "Lista de usuarios" --tailbox out 0 0
+
 }
 ##################### FIM DO MENU CRIACAO DE USUARIO ###########################
 
 ######################## MENU PARA EXCLUIR USUARIOS ############################
 excu(){
-	dialog --stdout --msgbox "2" 0 0	
+	dialog --msgbox "2" 0 0
 }
 ###################### FIM DO MENU PARA EXCLUIR USUARIOS #######################
 
 ######################## MENU ALTERAR NOME DE USUARIOS #########################
 altn(){
-	dialog --stdout --msgbox "3" 0 0	
+	dialog --msgbox "3" 0 0
 }
 ##################### FIM DO MENU ALTERAR NOME DE USUARIOS #####################
 
 ######################## MENU ALTERAR SENHA DE USUARIOS ########################
 alts(){
-	dialog --stdout --msgbox "4" 0 0	
+	dialog --msgbox "4" 0 0
 }
 ################### FIM DO MENU ALTERAR SENHA DE USUARIOS ######################
 
 ######################## MENU LISTAR TODOS OS USUARIOS #########################
 list(){
-	dialog --stdout --msgbox "5" 0 0	
+	dialog --msgbox "5" 0 0
 }
 ##################### FIM DO MENU LISTAR TODOS OS USUARIOS #####################
 
@@ -190,13 +252,6 @@ volu(){
 	mprin
 }
 ############################## FIM DO MENU VOLTAR ##############################
-
-
-
-
-
-
-
 
 
 
@@ -210,93 +265,5 @@ volu(){
 ################################################################################
 #                      FIM DAS FUNCOES DO MENU PRINCIPAL                       #
 ################################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-############################ FUNCAO CRIAR USUARIO ##############################
-criu(){
-clear
-
-	user=$(dialog --stdout							\
-	      --inputbox "Digite o nome do usuário a ser criado:" 0 50)
-
-	if [ -z $user ]; then
-		dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo nome de usuário é obrigatório!!!" 0 0 
-		cuser
-	fi
-
-###################### SOLICITACAO DA SENHA ####################################
-
-	senha=$(dialog --stdout --insecure 		\
-		--passwordbox "Digite a senha:" 0 0 )
-
-	if [ -z $senha ]; then
-		dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo senha é obrigatório! Tente novamente!" 0 0 
-		if [ "$?" == "0" ]; then
-		guser
-		else
-		guser
-		fi
-	fi
-
-	senha1=$(dialog --stdout --insecure		\
-		--passwordbox "Confirme a senha:" 0 0 )	\
-
-#################### Comparação das senhas ##########################
-
-	if [ $senha != "$senha1" ]; then
-		dialog --yesno "A senha informada não confere!!! \
-		Deseja tentar novamente?" 7 40
-
-		if [ "$?" == "0" ]; then
-		guser
-		else
-		guser
-		fi
-	fi
-
-########## Solicitação da confirmação da criação do usuário ##############
-
-	dialog  --title "Confirmação"		\
-		--backtitle "Atenção"		\
-		--yesno "Você tem certeza que deseja criar o usuário "$user" ?" 7 60
-
-################# Comparação da escolha do usuário Sim ou Não  ##################
-
-	if [ "$?" == "0" ]; then
-
-	useradd -m -d /home/$user -r -s /bin/bash $user;
-	(echo $senha; echo $senha) | passwd $user;
-	dialog	--aspect 45 --msgbox "Usuário "$user" criado com sucesso!" 0 0
-
-	else
-
-	dialog --msgbox --aspect 45 "Procedimento Cancelado!" 0 0
-
-	fi
-
-	tail -f /etc/passwd > out &
-	dialog --title "Lista de usuários" --tailbox out 0 0
-}
-
 
 mprin
