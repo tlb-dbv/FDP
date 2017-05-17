@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ##############################################################################
-#                    TODAS FUNCOES DE TODOS OS MENU                          # 
+#                    TODAS FUNCOES DE TODOS OS MENU                          #
 ##############################################################################
 
 ########################### MENU PRINCIPAL ###################################
@@ -9,8 +9,8 @@ function mprin() {
 clear
 
 mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
-	    --menu "Escolha uma opção" 0 0 0 	\
-1 "Gerenciar Usuários"	        \
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Gerenciar Usuarios"	        \
 2 "Gerenciar Grupos"		\
 3 "Gerenciar Arquivos"		\
 4 "Gerenciar Rede Local"	\
@@ -23,7 +23,7 @@ mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
 case $mhome in
 
 1) gusur ;;
-2) ggrup ;; 
+2) ggrup ;;
 3) gfile ;;
 4) grede ;;
 5) gdisp ;;
@@ -33,22 +33,22 @@ case $mhome in
 9) exit ;;
 esac
 }
-########################### FIM DO MENU PRINCIPAL ###############################
+######################## FIM DO MENU PRINCIPAL ###############################
 
-######################## MENU GERENCIAMENTO DE USUARIO ##########################
+####################### MENU GERENCIAMENTO DE USUARIO ########################
 gusur(){
 musur=$(dialog --stdout --title "Gerenciamento de Usuarios"\
-	    --menu "Escolha uma opção" 0 0 0 	\
+	    --menu "Escolha uma opcao" 0 0 0 	\
 1 "Criar usuarios"		\
 2 "Excluir usuarios"		\
 3 "Alterar nome do usuario"	\
 4 "Alterar senha do usuario"	\
 5 "Listar usuarios"		\
 6 "Voltar")
-		
+
 case $musur in
 
-1) criu ;; 
+1) criu ;;
 2) excu ;;
 3) altn ;;
 4) alts ;;
@@ -56,59 +56,59 @@ case $musur in
 6) volu ;;
 esac
 }
-##################### FIM DO MENU GERENCIAMENTO DE USUARIO ######################
+################### FIM DO MENU GERENCIAMENTO DE USUARIO ######################
 
-####################### MENU GERENCIAMENTO DE GRUPOS ###########################
-ggrup(){ 
+###################### MENU GERENCIAMENTO DE GRUPOS ###########################
+ggrup(){
 mgrup=$(dialog --stdout --title "Gerenciamento de Grupos"\
-	    --menu "Escolha uma opção" 0 0 0 \
+	    --menu "Escolha uma opcao" 0 0 0 \
 1 "Criar Grupo"			\
 2 "Excluir Grupo"		\
 3 "Adicionar Usuario no Grupo"	\
 4 "Remover Usuario no Grupo"	\
 5 "Listar Grupos"		\
 6 "Voltar")
-		
+
 case $mgrup in
 
-1) crig ;; 
+1) crig ;;
 2) excg ;;
 3) adug ;;
 4) exug ;;
 5) lisg ;;
 6) volu ;;
-esac	
+esac
 }
-################### FIM DO MENU GERENCIAMENTO DE GRUPOS ########################
+################## FIM DO MENU GERENCIAMENTO DE GRUPOS ########################
 
-##################### MENU GERENCIAMENTO DE ARQUIVOS ###########################
+#################### MENU GERENCIAMENTO DE ARQUIVOS ###########################
 gfile(){
 mfile=$(dialog --stdout --title "Gerenciamento de Arquivos"\
-	    --menu "Escolha uma opção" 0 0 0 	\
+	    --menu "Escolha uma opcao" 0 0 0 	\
 1 "Criar Arquivo"		\
 2 "Excluir Arquivo"		\
 3 "Movimentar Arquivo"		\
 4 "Compactar Arquivo"		\
 5 "Descompactar Arquivo"	\
 6 "Voltar")
-		
+
 case $mfile in
 
-1) crif ;; 
+1) crif ;;
 2) excf ;;
 3) movf ;;
 4) comf ;;
 5) desf ;;
 6) volu ;;
-esac	
-	
+esac
+
 }
-################## FIM DO MENU GERENCIAMENTO DE ARQUIVOS ######################
+################## FIM DO MENU GERENIAMENTO DE ARQUIVOS ######################
 
 ################## MENU GERENCIAMENTO DE REDES ######################
 grede(){
 mrede=$(dialog --stdout --title "Gerenciamento de Interface de Rede"\
-	    --menu "Escolha uma opção" 0 0 0 	\
+	    --menu "Escolha uma opcao" 0 0 0 	\
 1 "Configurar IP"		 \
 2 "Configurar Mask"		 \
 3 "Configurar Gateway"		 \
@@ -116,39 +116,39 @@ mrede=$(dialog --stdout --title "Gerenciamento de Interface de Rede"\
 5 "Configurar ID da rede"	 \
 6 "Configurar o Nome da Maquina" \
 7 "Voltar")
-		
+
 case $mrede in
 
-1) coip ;; 
+1) coip ;;
 2) coma ;;
 3) coga ;;
 4) cobr ;;
 5) coid ;;
 6) conh ;;
 7) volu ;;
-esac	
+esac
 }
-###################### FIM DO MENU GERENCIAMENTO DE REDES ######################
+##################### FIM DO MENU GERENCIAMENTO DE REDES ######################
 
-###################### MENU GERENCIAMENTO DE DISPOSITIVO #######################
+##################### MENU GERENCIAMENTO DE DISPOSITIVO #######################
 gdisp(){
-	dialog --stdout --msgbox "dispositivo" 0 0	
+	dialog --stdout --msgbox "dispositivo" 0 0
 }
-################# FIM DO MENU GERENCIAMENTO DE DISPOSITIVO #####################
+################ FIM DO MENU GERENCIAMENTO DE DISPOSITIVO #####################
 
 ###################### MENU GERENCIAMENTO DE PACOTES ##########################
 grpto(){
-	dialog --stdout --msgbox "pacote" 0 0	
+	dialog --stdout --msgbox "pacote" 0 0
 }
-###################### FIM MENU GERENCIAMENTO DE PACOTES #######################
+##################### FIM MENU GERENCIAMENTO DE PACOTES #######################
 
-#################### MENU GERENCIAMENTO DE PERMISIONAMENTO #####################
+################### MENU GERENCIAMENTO DE PERMISIONAMENTO #####################
 gperm(){
 	dialog --stdout --msgbox "permissionamento" 0 0	
 }
-################ FIM DO MENU GERENCIAMENTO DE PERMISSIONAMENTO #################
+################ FIM DO MENU GERENCIAMENTO DE PERMISSIONAMENTO ################
 
-###################### MENU GERENCIAMENTO DE PROGRAMA ##########################
+###################### MENU GERENCIAMENTO DE PROGRAMA #########################
 gprgm(){
 	dialog --stdout --msgbox "shell" 0 0	
 }
@@ -159,12 +159,12 @@ gprgm(){
 criu(){
 	clear
 
-	user=$(dialog --stdout							\
+	user=$(dialog --stdout	\
 	--inputbox "Digite o nome do usuário a ser criado:" 0 50)
 	t=$?
 	if (( $t == 0 )); then
 		if [ -z $user ]; then
-			dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo nome de usuário é obrigatório!!!" 0 0 
+			dialog --aspect 45 --backtitle "Atencao" --msgbox "O campo nome de usuario e obrigatorio!!!" 0 0 
 			criu
 		fi
 	else
@@ -172,15 +172,15 @@ criu(){
 	fi
 		cris
 }
-################# Solicitação da senha ###############################
+################# Solicitacao da senha ###############################
 
-function cris(){
+cris(){
 	senha=$(dialog --stdout --insecure 		\
 		--passwordbox "Digite a senha:" 0 0 )
 		t=$?
 	if (( $t == 0 )); then
 		if [ -z $senha ]; then
-			dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo senha é obrigatório! Tente novamente!" 0 0 
+			dialog --aspect 45 --backtitle "Atencao" --msgbox "O campo senha e obrigatorio! Tente novamente!" 0 0
 			cris
 		else
 			reps
@@ -188,7 +188,7 @@ function cris(){
 	else
 		mprin
 	fi
-}	
+}
 
 reps (){
 	senha1=$(dialog --stdout --insecure 		\
@@ -196,7 +196,7 @@ reps (){
 		t=$?
 	if (( $t == 0 )); then
 		if [ -z $senha ]; then
-			dialog --aspect 45 --backtitle "Atenção" --msgbox "É obrigatório repetir a senha! Tente novamente!" 0 0 
+			dialog --aspect 45 --backtitle "Atencaoo" --msgbox "E obrigatorio repetir a senha! Tente novamente!" 0 0
 			reps
 		else
 			cons
@@ -204,31 +204,31 @@ reps (){
 	else
 		mprin
 	fi
-	
-}
-##################### FIM DO MENU CRIACAO DE USUARIO ####################
 
-######################## MENU PARA EXCLUIR USUARIOS ############################
+}
+######################### FIM DO MENU CRIACAO DE USUARIO ######################
+
+######################## MENU PARA EXCLUIR USUARIOS ###########################
 excu(){
-	dialog --stdout --msgbox "2" 0 0	
+	dialog --stdout --msgbox "2" 0 0
 }
 ###################### FIM DO MENU PARA EXCLUIR USUARIOS ######################
 
 ######################## MENU ALTERAR NOME DE USUARIOS ########################
 altn(){
-	dialog --stdout --msgbox "3" 0 0	
+	dialog --stdout --msgbox "3" 0 0
 }
 ##################### FIM DO MENU ALTERAR NOME DE USUARIOS ####################
 
-######################## MENU ALTERAR SENHA DE USUARIOS ########################
+####################### MENU ALTERAR SENHA DE USUARIOS ########################
 alts(){
-	dialog --stdout --msgbox "4" 0 0	
+	dialog --stdout --msgbox "4" 0 0
 }
-################### FIM DO MENU ALTERAR SENHA DE USUARIOS ######################
+################### FIM DO MENU ALTERAR SENHA DE USUARIOS #####################
 
 ######################## MENU LISTAR TODOS OS USUARIOS #########################
 list(){
-	dialog --stdout --msgbox "5" 0 0	
+	dialog --stdout --msgbox "5" 0 0
 }
 ##################### FIM DO MENU LISTAR TODOS OS USUARIOS #####################
 
@@ -242,10 +242,11 @@ mprin
 
 ####################### MENU PERMISSIONAMENTO DE USUARIOS #######################
 #perm(){
-#	dialog --stdout --msgbox "1" 0 0	
+#	dialog --stdout --msgbox "1" 0 0
 #}
 #################### FIM DO MENU PERMISSIONAMENTO DE USUARIO ###################
 
 ##############################################################################
-#                 FIM DAS FUNCOES DO MENU PRINCIPAL	                     # 
+#                 FIM DAS FUNCOES DO MENU PRINCIPAL	                     #
 ##############################################################################
+
