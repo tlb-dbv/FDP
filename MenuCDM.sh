@@ -32,6 +32,7 @@ case $mhome in
 8) gprgm ;;
 9) exit ;;
 esac
+t=$?
 }
 ######################## FIM DO MENU PRINCIPAL ###############################
 
@@ -132,25 +133,85 @@ esac
 
 ##################### MENU GERENCIAMENTO DE DISPOSITIVO #######################
 gdisp(){
-	dialog --stdout --msgbox "dispositivo" 0 0
+mdisp=$(dialog --stdout --title "Gerenciamento de Dispositivo"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Montar Dispositivo"		 \
+2 "Desmontar Dispositivo"		 \
+3 "Dispositivo Instalado"		 \
+4 "Voltar")
+
+case $mdisp in
+
+1) mond ;;
+2) desd ;;
+3) disi ;;
+4) volu ;;
+esac
 }
 ################ FIM DO MENU GERENCIAMENTO DE DISPOSITIVO #####################
 
 ###################### MENU GERENCIAMENTO DE PACOTES ##########################
 grpto(){
-	dialog --stdout --msgbox "pacote" 0 0
+mrpto=$(dialog --stdout --title "Gerenciamento de Pacotes"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Instalar Pacote"		 \
+2 "Desinstalar Pacote"		 \
+3 "Listar Pacotes"		 \
+4 "Voltar")
+
+case $mrpto in
+
+1) ipct ;;
+2) dpct ;;
+3) lpct ;;
+4) volu ;;
+esac
 }
 ##################### FIM MENU GERENCIAMENTO DE PACOTES #######################
 
 ################### MENU GERENCIAMENTO DE PERMISIONAMENTO #####################
 gperm(){
-	dialog --stdout --msgbox "permissionamento" 0 0	
+mperm=$(dialog --stdout --title "Gerenciamento de Pacotes"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Dono de um arquivo"				 \
+2 "Grupo de um arquivo"				 \
+3 "Permissao de usuario em um arquivo"		 \
+4 "Permissao de um grupo em um arquivo"		 \ 
+5 "Voltar")
+
+case $mperm in
+
+1) darq ;;
+2) garq ;;
+3) pusu ;;
+4) pgru ;;
+5) volu ;;
+esac
 }
 ################ FIM DO MENU GERENCIAMENTO DE PERMISSIONAMENTO ################
 
 ###################### MENU GERENCIAMENTO DE PROGRAMA #########################
 gprgm(){
-	dialog --stdout --msgbox "shell" 0 0	
+mprgm=$(dialog --stdout --title "Gerenciamento do Script" \
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Criar usuario para o script"	 \
+2 "Alterar Usuario do script"	 \
+3 "Alterar Senha do script"	 \
+4 "Deletar Usuario do script"	 \
+5 "Nivel de acesso"		 \
+6 "Listar Usuarios do script"	 \
+7 "Voltar")
+
+case $mprgm in
+
+1) cusp ;;
+2) ausp ;;
+3) asep ;;
+4) dusp ;;
+5) nacp ;;
+6) lusp ;;
+7) volu ;;
+esac
 }
 #################### FIM DO MENU GERENCIAMENTO DE PROGRAMA #####################
 
@@ -285,7 +346,7 @@ clear
 	tail -f /etc/passwd > out1 &
 	dialog --title "Lista de usuarios" --tailbox out1 0 0
 	user=$(dialog --stdout	\
-	      --inputbox "Digite o nome do usuário a ser modificado o nome:" 0 60)
+	      --inputbox "Digite o nome do usuário a ser modificado:" 0 60)
 		if (( $? == 0 )); then
 			if [ -z $user ]; then
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
@@ -308,7 +369,11 @@ musu(){
 			dialog --title " Confirmação"	\
 				--backtitle "Atenção"	\
 				--yesno "Você tem certeza que deseja renomear o usuário "$user" ?" 7 60
-			rena
+			if (( $? == 0 )); then
+				rena
+			else
+				gusur
+			fi
 		fi
 	else
 		gusur
@@ -343,7 +408,9 @@ alts(){
 
 ######################## MENU LISTAR TODOS OS USUARIOS #########################
 list(){
-	dialog --stdout --msgbox "5" 0 0
+	tail -f /etc/passwd > out1 &
+	dialog --title "Lista de usuarios" --tailbox out1 0 0
+	gusur
 }
 ##################### FIM DO MENU LISTAR TODOS OS USUARIOS #####################
 
