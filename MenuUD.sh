@@ -196,7 +196,7 @@ reps(){
 		t=$?
 	if (( $t == 0 )); then
 		if [ -z $senha ]; then
-			dialog --aspect 45 --backtitle "Atencaoo" --msgbox "E obrigatorio repetir a senha! Tente novamente!" 0 0
+			dialog --aspect 45 --backtitle "Atencao" --msgbox "E obrigatorio repetir a senha! Tente novamente!" 0 0
 			reps
 		else
 			cons
@@ -207,8 +207,8 @@ reps(){
 }
 cons() {
 	if [ "$senha" != "$senha1" ]; then
-		dialog --yes-label Sim --no-label Nao --yesno "As senhas não são iguais!!! \
-		Deseja terntar novamente?" 7 40
+		dialog --yes-label Sim --no-label Nao --yesno "As senhas nao sao iguais!!! \
+		Deseja tentar novamente?" 7 40
 		t=$?
 		if (( $t == 0 )); then
 			cris
@@ -241,7 +241,41 @@ conc() {
 
 ######################## MENU PARA EXCLUIR USUARIOS ###########################
 excu(){
-	dialog --stdout --msgbox "2" 0 0
+	clear
+
+	tail -f /etc/passwd > out1 &
+	dialog --title "Lista de usuarios" --tailbox out1 0 0
+	user=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser deletado:" 0 50)
+
+################## Verifica se o usuario digitou na caixa de dialogo ######
+
+		if [ -z $user ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+			excu
+		fi
+#################### Confirmacao  da exclusao do usuario #################
+
+	dialog --title "Confirmacao"		\
+		--backtitle "Atencao"		\
+		--yesno "Voce tem ceteza que deseja deletar o usuario "$user" ?" 7 50
+
+	if [ "$?" == "0" ]; then
+		deluser $user
+		t=$?
+		if (( $t != 0 )); then
+			dialog --aspect 50 --msgbox "Usuario "$user" nao existe!" 0 0
+			gusur
+		else
+			dialog --aspect 50 --msgbox "Usuario "$user" deletado com sucesso!" 0 0
+			gusur
+
+		fi
+	else
+
+		dialog --aspect 45 --msgbox "Procedimento Cancelado!" 0 0
+		gusur
+	fi
 }
 ###################### FIM DO MENU PARA EXCLUIR USUARIOS ######################
 
@@ -298,35 +332,3 @@ mprin
 
 
 
-function ruser(){
-clear
-
-tail -f /etc/passwd > out1 &
-dialog --title "Lista de usuários" --tailbox out1 0 0
-
-user=$(dialog --stdout							\
-	      --inputbox "Digite o nome do usuário a ser deletado:" 0 50)
-
-################## Verifica se o usuario digitou na caixa de dialogo ######
-
-		if [ -z $user ]; then
-		dialog --aspect 40 --backtitle "Atenção" --msgbox "Nome obrigatório!!!" 0 0 
-		ruser
-		fi
-#################### Confirmação  da exclusão do usuario #################
-
-dialog --title "Confirmação"		\
-	--backtitle "Atenção"		\
-	--yesno "Você tem ceteza que deseja deletar o usuário "$user" ?" 7 50
-
-if [ $? == "0" ]; then
-
-deluser $user
-
-dialog --aspect 50 --msgbox "Usuário "$user" deletado com sucesso!" 0 0
-
-else
-
-dialog --aspect 45 --msgbox "Procedimento Cancelado!" 0 0
-
-fi
