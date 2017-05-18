@@ -160,7 +160,7 @@ criu(){
 	clear
 
 	user=$(dialog --stdout	\
-	--inputbox "Digite o nome do usu�rio a ser criado:" 0 50)
+	--inputbox "Digite o nome do usuario a ser criado:" 0 50)
 	t=$?
 	if (( $t == 0 )); then
 		if [ -z $user ]; then
@@ -168,7 +168,7 @@ criu(){
 			criu
 		fi
 	else
-		mprin
+		gusur
 	fi
 		cris
 }
@@ -186,11 +186,11 @@ cris(){
 			reps
 		fi
 	else
-		mprin
+		gusur
 	fi
 }
 
-reps (){
+reps(){
 	senha1=$(dialog --stdout --insecure 		\
 		--passwordbox "Confirme a senha:" 0 0 )
 		t=$?
@@ -202,9 +202,40 @@ reps (){
 			cons
 		fi
 	else
-		mprin
+		gusur
 	fi
-
+}
+cons() {
+	if [ "$senha" != "$senha1" ]; then
+		dialog --yes-label Sim --no-label Nao --yesno "As senhas não são iguais!!! \
+		Deseja terntar novamente?" 7 40
+		t=$?
+		if (( $t == 0 )); then
+			cris
+		else
+			gusur
+		fi
+	else
+		conc
+	fi
+}
+conc() {
+	dialog --title "Confirmação" \
+	       --backtitle "Atenção" \
+	       --yes-label Sim --no-label Nao --yesno "Voce tem certeza que deseja criar o usuario "$user" ?" 7 60
+	t=$?
+	#dialog --msgbox "$t" 0 0
+	if [ "$t" == "0" ]; then
+		useradd -m -d /home/$user -r -s /bin/bash $user
+		(echo $senha; echo $senha) | passwd $user
+		dialog --msgbox --aspect 45 "Usuario $user criado com sucesso!" 0 0
+		tail -f /etc/passwd > out &
+		dialog --title "Lista de usuarios" --textbox out 30 30
+		gusur
+	else
+		dialog --msgbox --aspect 45 "Procedimento cancelado!" 0 0
+		gusur
+	fi
 }
 ######################### FIM DO MENU CRIACAO DE USUARIO ######################
 
