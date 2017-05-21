@@ -310,35 +310,32 @@ excu(){
 	dialog --title "Lista de usuarios" --tailbox out1 0 0
 	user=$(dialog --stdout	\
 		--inputbox "Digite o nome do usuario a ser deletado:" 0 50)
-
-################## Verifica se o usuario digitou na caixa de dialogo ######
-
-		if [ -z $user ]; then
-			dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
-			excu
-		fi
-#################### Confirmacao  da exclusao do usuario #################
-
-	dialog --title "Confirmacao"		\
-		--backtitle "Atencao"		\
-		--yesno "Voce tem ceteza que deseja deletar o usuario "$user" ?" 7 50
-
-	if [ "$?" == "0" ]; then
-		deluser $user
-		t=$?
-		if (( $t != 0 )); then
-			dialog --aspect 50 --msgbox "Usuario "$user" nao existe!" 0 0
-			gusur
+		if (( $? == 0 )); then
+			if [ -z $user ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				excu
+			else
+				dialog --title "Confirmacao"		\
+				--backtitle "Atencao"		\
+				--yesno "Voce tem ceteza que deseja deletar o usuario "$user" ?" 7 50
+			fi
+			if [ "$?" == "0" ]; then
+				deluser $user
+				t=$?
+				if (( $t != 0 )); then
+					dialog --aspect 50 --msgbox "Usuario "$user" nao existe!" 0 0
+					gusur
+				else
+					dialog --aspect 50 --msgbox "Usuario "$user" deletado com sucesso!" 0 0
+					gusur
+				fi
+			else
+				dialog --aspect 45 --msgbox "Procedimento Cancelado!" 0 0
+				gusur
+			fi
 		else
-			dialog --aspect 50 --msgbox "Usuario "$user" deletado com sucesso!" 0 0
 			gusur
-
 		fi
-	else
-
-		dialog --aspect 45 --msgbox "Procedimento Cancelado!" 0 0
-		gusur
-	fi
 }
 ###################### FIM DO MENU PARA EXCLUIR USUARIOS ######################
 
@@ -423,8 +420,6 @@ volu(){
 ############################## FIM DO MENU VOLTAR ##############################
 
 ################### MENU CRIAR ARQUIVO ##############################
-#3) movf ;;
-#4) comf ;;
 #5) desf ;;
 crif (){
 	clear
@@ -579,31 +574,70 @@ filr() {
 		gfile
 	fi
 }
-	
-	function rearquivo (){
-	clear
-	
-	rearq=$(dialog --stdout \
-	--inputbox "Digite o nome do arquivo a ser renomeado:" 0 0)
-	
-	novoarq=$(dialog --stdout \
+
+####################### Compactar Arquivo #############################	
+comf() {
+	comp=$(dialog --title "Compactar arquivo" \
+	--stdout --title "Selecione o arquivo que sera compactado" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $comp ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			comf
+		else
+			coma
+		fi
+	else
+		gfile
+	fi	
+}
+coma() {
+	narq=$(dialog --stdout \
 	--inputbox "Digite o novo nome do arquivo:" 0 0)
-	
-	touch $novoarq $rearq
-	
-	ls -la > out6 &
-	
-	dialog --title "Lista de arquivos" --tailbox out6 0 0
-	
-	}
-	
-	menu3
-
-
-
-
-################### FIM DO MENU CRIAR ARQUIVO ##############################
-
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $narq ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um nome para o arquivo compactado!" 0 0
+			coma
+		else
+			arql
+		fi
+	else
+		gfile
+	fi
+}
+arql() {
+	loar=$(dialog --title "Compactar arquivo" \
+	--stdout --title "Selecione o local que sera armazenado o arquivo compactado" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $loar ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			arql
+		else
+			tar -cvf $loar/$narq $comp
+			t=$?
+			if (( $t == 2 ));then
+				dialog --title "Confirmação" \
+				--backtitle "Atenção" \
+				--yesno "Gostaria de criar o diretorio ?" 7 50
+				if (( $? == 0 )); then
+					mkdir $loar
+					tar -cvf $loar/$narq $comp
+					gfile
+				else
+					gfile
+				fi
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo compactado com sucesso"
+				gfile
+			fi
+		fi
+		gfile
+	fi
+}
 mprin
 
 
