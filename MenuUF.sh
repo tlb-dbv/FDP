@@ -578,13 +578,13 @@ filr() {
 	fi
 }
 
-crid() {
+#crid() {
 
-}
+#}
 
-deld() {
+#deld() {
 
-}
+#}
 ####################### Compactar Arquivo #############################	
 comf() {
 	comp=$(dialog --title "Compactar arquivo" \
@@ -676,6 +676,7 @@ locd=$(dialog --title "Descompactar arquivo" \
 			desl
 		else
 			tar -xvf $desc -C $locd
+			gfile
 		fi
 	else
 		gfile
