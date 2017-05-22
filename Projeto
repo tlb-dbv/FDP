@@ -291,7 +291,6 @@ conc() {
 	       --backtitle "Atenção" \
 	       --yes-label Sim --no-label Nao --yesno "Voce tem certeza que deseja criar o usuario "$user" ?" 7 60
 	t=$?
-	#dialog --msgbox "$t" 0 0
 	if [ "$t" == "0" ]; then
 		useradd -m -d /home/$user -r -s /bin/bash $user
 		(echo $senha; echo $senha) | passwd $user
@@ -475,14 +474,103 @@ excg() {
 		fi
 }
 
-#3) adug ;;
-#4) exug ;;
+adug() {
+	addu=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser adiconado em um grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $addu ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				adug
+			else
+				gpasswd -a $addu root
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $addu nao existe!!!" 0 0 
+					adug
+				else
+					gpasswd -d $addu root
+					addg
+				fi
+			fi
+		else
+			ggrup
+		fi
+}
+
+addg() {
+	adgr=$(dialog --stdout	\
+		--inputbox "Digite o nome do Grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $adgr ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+				addg
+			else
+				gpasswd -a $addu $adgr
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo $adgr nao existe!!!" 0 0
+					addg
+				else
+					 
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $addu adicionado no grupo $adgr!!!" 0 0 
+					ggrup
+				fi			
+			fi
+		else
+			ggrup
+		fi
+}
+exug() { 
+	excu=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser removido de um grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $excu ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				exug
+			else
+				gpasswd -a $excu root
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $excu nao existe!!!" 0 0 
+					exug
+				else
+					#gpasswd -d $excu root
+					excg
+				fi
+			fi
+		else
+			ggrup
+		fi
+}
+
+excg() {
+	exgr=$(dialog --stdout	\
+		--inputbox "Digite o nome do Grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $exgr ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+				excg
+			else
+				gpasswd -d $excu $exgr
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo $exgr nao existe!!!" 0 0
+					excg
+				else
+					 
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $excu removido do grupo $exgr!!!" 0 0 
+					ggrup
+				fi			
+			fi
+		else
+			ggrup
+		fi
+}
 lisg() { 
-	tail -f /etc/group > out1 &
+	cat /etc/group > out1 &
 	dialog --title "Lista de grupos" --tailbox out1 0 0
 	ggrup
 }
-#6) volu
 ################### MENU CRIAR ARQUIVO ##############################
 crif (){
 	clear
