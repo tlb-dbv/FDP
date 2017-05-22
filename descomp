@@ -1,0 +1,34 @@
+#!/bin/bash
+desf() {
+desc=$(dialog --title "Descompactar arquivo" \
+	      --stdout --title "Selecione o arquivo a ser descompactado" \
+	      --fselect /home/ 0 0)
+	      t=$?
+	      if (( $t == 0 )); then
+			if [ -z $desc ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo a ser descompactado!" 0 0
+				desf
+			else
+				desl
+			fi
+	      else
+			gfile
+	      fi
+}
+desl() {
+locd=$(dialog --title "Descompactar arquivo" \
+	--stdout --title "Selecione o destino da descompactação do arquivo" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $locd ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "E necessario escolher um local!" 0 0
+			desl
+		else
+			tar -xvf $desc -C $locd
+		fi
+	else
+		gfile
+	fi
+}
+desf
