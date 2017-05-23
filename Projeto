@@ -845,3 +845,81 @@ mprin
 
 
 ################################ Fun��o Criar Arquivos ####################################
+
+
+
+
+
+ 
+########################### Função Mudar a senhao #####################
+function senhauser() {
+clear
+
+user=$(dialog --stdout							\
+	      --inputbox "Digite o nome do usuário a ser modificado a senha:" 0 60)
+
+
+	if [ -z $user ]; then
+		dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo nome de usuário é obrigatório!!!" 0 0 
+		cuser
+	fi
+##########################################################################
+
+#senha=$(dialog --stdout	--insecure					\
+#	        --passwordbox  "Digite a nova senha do usuário:" 0 50)
+#
+#dialog --title " Confirmação"	\
+#	--backtitle "Atenção"	\
+#	--yesno "Você tem certeza que deseja alterar a senha do usuário "$user" ?" 7 60
+
+##################### Comando para renomear usuário ################
+
+#	if [ -z $senha ]; then
+#		dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo senha é obrigatório! Tente novamente!" 0 0 
+#		if [ "$?" == "0" ]; then
+#		menu1
+#		else
+#		menu1
+#		fi
+#	fi
+#
+#	senha1=$(dialog --stdout --insecure		\
+#		--passwordbox "Confirme a senha:" 0 0 )	\
+#
+#
+#
+#################### Comparação das senhas ##########################
+#
+#	if [ $senha != "$senha1" ]; then
+#		dialog --yesno "A senha informada não confere!!! \
+#		Deseja tentar novamente?" 7 40
+#
+#		if [ "$?" == "0" ]; then
+#		menu1
+#		else
+#		menu1
+#		fi
+#	fi
+########## Solicitação da confirmação da criação do usuário ##############
+#
+#	dialog  --title "Confirmação"		\
+#		--backtitle "Atenção"		\
+#		--yesno "Você tem certeza que deseja alterar a senha do usuário "$user" ?" 7 60
+#
+################# Comparação da escolha do usuário Sim ou Não  ##################
+
+if [ "$?" == "0" ]; then
+
+passwd  $user
+
+dialog --aspect 50 --msgbox "Usuário "$user" renomeado com sucesso!" 0 0
+
+tail -f /etc/passwd > out2 &
+dialog --title "Lista de usuários" --tailbox out out2 0 0 
+
+else
+
+dialog --msgbox "Procedimento Cancelado!" 0 0
+
+tail -f /etc/passwd > out2 &
+dialog --title "Lista de usuários" --tailbox out out2 0 0 
