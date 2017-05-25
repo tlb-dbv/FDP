@@ -34,6 +34,10 @@ case $mhome in
 esac
 t=$?
 }
+
+teste (){
+echo "OI"
+}
 ######################## FIM DO MENU PRINCIPAL ###############################
 
 ####################### MENU GERENCIAMENTO DE USUARIO ########################
@@ -177,19 +181,20 @@ esac
 
 ################### MENU GERENCIAMENTO DE PERMISIONAMENTO #####################
 gperm(){
-mperm=$(dialog --stdout --title "Gerenciamento de Pacotes"\
+
+mperm=$(dialog --stdout --title "Gerenciamento de Permissionamento"\
 	    --menu "Escolha uma opcao" 0 0 0 	\
-1 "Dono de um arquivo"				 \
-2 "Grupo de um arquivo"				 \
-3 "Permissao de usuario em um arquivo"		 \
-4 "Permissao de um grupo em um arquivo"		 \ 
-5 "Voltar")
+1 "Dono de um arquivo" \
+2 "Grupo de um arquivo" \
+3 "Permissao do usuario em um arquivo" \
+4 "Permissao de um grupo em um arquivo" \
+5 "Voltar" )
 
 case $mperm in
 
-1) darq ;;
-2) garq ;;
-3) pusu ;;
+1) parq ;;
+2) pgru ;;
+3) pusr ;;
 4) pgru ;;
 5) volu ;;
 esac
@@ -586,9 +591,9 @@ crif (){
 			--stdout --title "Selecione o local onde sera salvo o arquivo" \
 			--fselect /home/ 0 0)
 
-			dialog --title "Confirmação" \
-			--backtitle "Atenção" \
-			--yesno "Você tem certeza que deseja criar o arquivo? $arq no $caminho" 7 50
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
+			--yesno "Você tem certeza que deseja criar o arquivo? $arq no $caminho" 0 0 
 		fi
 	else
 		gfile
@@ -795,7 +800,8 @@ deld() {
 					--yesno "Voce vai fazer cagada! deseja mesmo continuar??" 7 150
 					u=$?
 					if (( $u == 0 )); then
-						rm -rf $dird
+						dialog --aspect 40 --backtitle "Atencao" --msgbox "Impossivel apagar esse diretorio!!!" 0 0 
+						gfile
 					else
 						gfile
 					fi
@@ -909,7 +915,47 @@ locd=$(dialog --title "Descompactar arquivo" \
 		gfile
 	fi
 }
+
+parq() {
+	dono=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser adiconado como dono do arquivo ou diretorio:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $dono ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario obrigatorio!!!" 0 0 
+				parq
+			else
+				darq
+			fi
+		else
+			gperm
+		fi
+}
+darq() {
+	dirp=$(dialog --title "Compactar arquivo" \
+	--stdout --title "Selecione o arquivo ou diretorio que sofrera alteracao de dono" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $comp ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			darq
+		else
+			
+		fi
+	fi
+}
 mprin
+pgru() {
+
+}
+pusr() {
+
+}
+
+pgru() {
+
+}
+
 
 
 ####################### MENU PERMISSIONAMENTO DE USUARIOS #######################
@@ -923,7 +969,13 @@ mprin
 ##############################################################################
 
 
-################################ Função Criar Arquivos ####################################
+
+
+
+
+
+
+
 
 
 
