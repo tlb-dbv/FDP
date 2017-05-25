@@ -744,7 +744,7 @@ crid() {
 		fi
 }
 locd() {
-	dirl=$(dialog --title "Renomear arquivo" \
+	dirl=$(dialog --title " Local diretorio" \
 	--stdout --title "Selecione o destino para criar o diretorio" \
 	--fselect /home/ 0 0)
 	t=$?
@@ -775,9 +775,43 @@ locd() {
 	fi 		
 }
 
-#deld() {
+deld() {
+	dird=$(dialog --title " Local diretorio" \
+	--stdout --title "Selecione o destino para excluir o diretorio" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then			
+		if [ -z $dird ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio obrigatorio!!!" 0 0 
+			deld
+		else
+			dialog --title "Confirma��o" \
+			--backtitle "Aten��o" \
+			--yesno "Apagar $dird?" 7 50
+			if (( $? == 0 )); then
+				if [ "$dird" == "/" ]; then
+					dialog --title "Confirma��o" \
+					--backtitle "Aten��o" \
+					--yesno "Voce vai fazer cagada! deseja mesmo continuar??" 7 150
+					u=$?
+					if (( $u == 0 )); then
+						rm -rf $dird
+					else
+						gfile
+					fi
+				else
+					rm -rf $dird
+					gfile
+				fi
+			else
+				gfile
+			fi
+		fi			
+	else
+		gfile
+	fi
+}
 
-#}
 ####################### Compactar Arquivo #############################	
 comf() {
 	comp=$(dialog --title "Compactar arquivo" \
@@ -953,18 +987,18 @@ user=$(dialog --stdout							\
 #
 ################# Comparação da escolha do usuário Sim ou Não  ##################
 
-if [ "$?" == "0" ]; then
+#if [ "$?" == "0" ]; then
 
-passwd  $user
+#passwd  $user
 
-dialog --aspect 50 --msgbox "Usuário "$user" renomeado com sucesso!" 0 0
+#dialog --aspect 50 --msgbox "Usuário "$user" renomeado com sucesso!" 0 0
+#
+#tail -f /etc/passwd > out2 &
+#dialog --title "Lista de usuários" --tailbox out out2 0 0 
+#
+#else
 
-tail -f /etc/passwd > out2 &
-dialog --title "Lista de usuários" --tailbox out out2 0 0 
+#dialog --msgbox "Procedimento Cancelado!" 0 0
 
-else
-
-dialog --msgbox "Procedimento Cancelado!" 0 0
-
-tail -f /etc/passwd > out2 &
-dialog --title "Lista de usuários" --tailbox out out2 0 0 
+#tail -f /etc/passwd > out2 &
+#dialog --title "Lista de usuários" --tailbox out out2 0 0 
