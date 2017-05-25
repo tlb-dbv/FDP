@@ -101,9 +101,9 @@ case $mfile in
 1) crif ;;
 2) excf ;;
 3) movf ;;
-4) crid ;;
-5) deld ;;
-6) renf ;; 
+4) renf;;
+5) crid ;;
+6) deld ;; 
 7) comf ;;
 8) desf ;;
 9) volu ;;
@@ -726,9 +726,54 @@ filr() {
 	fi
 }
 
-#crid() {
 
-#}
+
+
+crid() {
+	dirc=$(dialog --stdout	\
+		--inputbox "Digite o nome do diretorio a ser criado:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $dirc ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				crid
+			else
+				locd
+			fi
+		else
+			gfile
+		fi
+}
+locd() {
+	dirl=$(dialog --title "Renomear arquivo" \
+	--stdout --title "Selecione o destino para criar o diretorio" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then			
+		if [ -z $dirl ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Destino obrigatorio!!!" 0 0 
+			locd
+		else
+			mkdir $dirl/$dirc
+			o=$?
+			if (( $o == 1 )); then			
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Local do destino nao existe!!!" 0 0
+				dialog --title "Confirmação" \
+				--backtitle "Atenção" \
+				--yesno "Gostaria de selecionar o destino novamente?" 7 50
+				if (( $? == 0 )); then
+					locd
+				else
+					gfile
+				fi
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio criado com sucesso!!!" 0 0
+				gfile
+			fi
+		fi
+	else
+		gfile
+	fi 		
+}
 
 #deld() {
 
