@@ -940,7 +940,7 @@ darq() {
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
 			darq
 		else
-			
+			darq		
 		fi
 	fi
 }
