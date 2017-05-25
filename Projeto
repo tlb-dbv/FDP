@@ -936,12 +936,21 @@ darq() {
 	--fselect /home/ 0 0)
 	t=$?
 	if (( $t == 0 )); then
-		if [ -z $comp ]; then
+		if [ -z $dirp ]; then
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
 			darq
 		else
-			darq		
+			ls $dirp
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio ou arquivo nao existe!" 0 0
+				darq
+			else
+				chown $dono $dirp
+				gperm
+			fi
 		fi
+	else
+		gperm
 	fi
 }
 mprin
