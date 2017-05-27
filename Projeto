@@ -922,6 +922,69 @@ locd=$(dialog --title "Descompactar arquivo" \
 		gfile
 	fi
 }
+ipct() {
+	insp=o$(dialog --stdout	\
+		--inputbox "Digite o nome do pacote a ser instalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $insp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
+				ipct
+			else
+				apt-get install $insp
+				if (( $? != 0 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote instalado com sucesso!!!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
+
+dpct() {
+	delp=o$(dialog --stdout	\
+		--inputbox "Digite o nome do digite o nome do pacote que sera desinstalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $delp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
+				dpct
+			else
+				apt-get remove $delp
+				if (( $? != 0 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote desinstalado com sucesso!!!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
+
+
+lpct() {
+	ls /usr/bin/ > out1 &
+	dialog --title "Pacotes Instaldos" --tailbox out1 0 0
+}
+pgru() {
+	grup=$(dialog --stdout	\
+		--inputbox "Digite o nome do grupo a ser modificado como grupo do arquivo ou diretorio:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $grup ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+				pgru
+			else
+				gdar
+			fi
+		else
+			gperm
+		fi
+}
 
 parq() {
 	dono=$(dialog --stdout	\
@@ -938,7 +1001,7 @@ parq() {
 		fi
 }
 darq() {
-	dirp=$(dialog --title "Compactar arquivo" \
+	dirp=$(dialog --title "Selecione Arquivo" \
 	--stdout --title "Selecione o arquivo ou diretorio que sofrera alteracao de dono" \
 	--fselect /home/ 0 0)
 	t=$?
@@ -996,99 +1059,122 @@ perf() {
 	W	'Gravacao/Escrever/Apagar' off		\
 	X	'Execucao/Acessar'	   off		\
 	0	'Nada'			   off)	
-	i=$?
-	if (( $i == 0 )); then
+	
+	if (( $? == 0 )); then
 		if [ -z $t ]; then
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
 			perf	 
 		else
 			if [ "$t" == "R W X" ]; then
 				d=7
-			elif [ "$t == "R W " ]; then
+			elif [ "$t" == "R W " ]; then
 				d=6	
-			elif [ "$t == "R X" ]; then
+			elif [ "$t" == "R X" ]; then
 				d=5	
-			elif [ "$t == "R" ]; then
+			elif [ "$t" == "R" ]; then
 				d=4	
-			elif [ "$t == "W X" ]; then
+			elif [ "$t" == "W X" ]; then
 				d=3	
-			elif [ "$t == "W" ]; then
+			elif [ "$t" == "W" ]; then
 				d=2	
-			elif [ "$t == "X" ]; then
+			elif [ "$t" == "X" ]; then
 				d=1	
-			elif [ "$t == "0" ]; then
+			elif [ "$t" == "0" ]; then
 				d=0	
 			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
 				perf		
 			fi
 		fi
 	else
-		perf
+		gperm
+	fi
+}
+
+pgru() {
+	t=$(dialog 					\
+	--stdout					\
+	--title 'Permissionamento Grupo'			\
+	--checklist 'O que o Grupo vai poder fazer ?' 	\
+	0 0 0						\
+	R	'Leitura/Visualizar' 	   off		\
+	W	'Gravacao/Escrever/Apagar' off		\
+	X	'Execucao/Acessar'	   off		\
+	0	'Nada'			   off)	
+	
+	if (( $? == 0 )); then
+		if [ -z $t ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			perf	 
+		else
+			if [ "$t" == "R W X" ]; then
+				g=7
+			elif [ "$t" == "R W " ]; then
+				g=6	
+			elif [ "$t" == "R X" ]; then
+				g=5	
+			elif [ "$t" == "R" ]; then
+				g=4	
+			elif [ "$t" == "W X" ]; then
+				g=3	
+			elif [ "$t" == "W" ]; then
+				g=2	
+			elif [ "$t" == "X" ]; then
+				g=1	
+			elif [ "$t" == "0" ]; then
+				g=0	
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
+				pgru		
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+
+
+
+
+pout() {
+	t=$(dialog 					\
+	--stdout					\
+	--title 'Permissionamento Demai'			\
+	--checklist 'O que os demais usuarios vao poder fazer ?' 	\
+	0 0 0						\
+	R	'Leitura/Visualizar' 	   off		\
+	W	'Gravacao/Escrever/Apagar' off		\
+	X	'Execucao/Acessar'	   off		\
+	0	'Nada'			   off)	
+	
+	if (( $? == 0 )); then
+		if [ -z $t ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			perf	 
+		else
+			if [ "$t" == "R W X" ]; then
+				o=7
+			elif [ "$t" == "R W " ]; then
+				o=6	
+			elif [ "$t" == "R X" ]; then
+				o=5	
+			elif [ "$t" == "R" ]; then
+				o=4	
+			elif [ "$t" == "W X" ]; then
+				o=3	
+			elif [ "$t" == "W" ]; then
+				o=2	
+			elif [ "$t" == "X" ]; then
+				o=1	
+			elif [ "$t" == "0" ]; then
+				o=0	
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
+				pout		
+			fi
+		fi
+	else
+		gperm
 	fi
 }
 mprin
-ipct() {
-	insp=o$(dialog --stdout	\
-		--inputbox "Digite o nome do digite o nome do pacote a ser instalado" 0 50)
-		if (( $? == 0 )); then
-			if [ -z $insp ]; then
-				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
-				ipct
-			else
-				apt-get install $insp
-				if (( $? != 0 )); then
-					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
-					grpto
-				else
-					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote instalado com sucesso!!!" 0 0 
-					grpto
-				fi
-			fi
-		else
-			grpto
-		fi
-}
-
-dpct() {
-	delp=o$(dialog --stdout	\
-		--inputbox "Digite o nome do digite o nome do pacote que sera desinstalado" 0 50)
-		if (( $? == 0 )); then
-			if [ -z $delp ]; then
-				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
-				dpct
-			else
-				apt-get remove $delp
-				if (( $? != 0 )); then
-					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
-					grpto
-				else
-					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote desinstalado com sucesso!!!" 0 0 
-					grpto
-				fi
-			fi
-		else
-			grpto
-		fi
-}
-
-
-#lpct() {
-#	ls /usr/bin/ > out1 &
-#	dialog --title "Pacotes Instaldos" --tailbox out1 0 0
-#}
-#pgru() {
-#	grup=$(dialog --stdout	\
-#		--inputbox "Digite o nome do grupo a ser modificado como grupo do arquivo ou diretorio:" 0 50)
-#		if (( $? == 0 )); then
-#			if [ -z $grup ]; then
-#				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
-#				pgru
-#			else
-#				gdar
-#			fi
-#		else
-#			gperm
-#		fi
-#}
-#mprin
-
