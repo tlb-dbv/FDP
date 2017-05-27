@@ -361,8 +361,8 @@ excu(){
 
 ######################## MENU ALTERAR NOME DE USUARIOS ########################
 anom(){
-	#tail -f /etc/passwd > out1 &
-	#dialog --title "Lista de usuarios" --tailbox out1 0 0
+	tail -f /etc/passwd > out1 &
+	dialog --title "Lista de usuarios" --tailbox out1 0 0
 	altn=$(dialog --stdout	\
 	      --inputbox "Digite o nome do usuario a ser modificado:" 0 60)
 		if (( $? == 0 )); then
@@ -386,7 +386,7 @@ musu(){
 		else 
 			dialog --title " Confirmacao"	\
 				--backtitle "Atencao"	\
-				--yesno "Você tem certeza que deseja renomear o usuário "$altn" ?" 7 60
+				--yesno "Voce tem certeza que deseja renomear o usuario "$altn" ?" 7 60
 			if (( $? == 0 )); then
 				rena
 			else
@@ -602,7 +602,7 @@ crif (){
 
 			dialog --title "Confirmacao" \
 			--backtitle "Atencao" \
-			--yesno "Você tem certeza que deseja criar o arquivo? $arq no $caminho" 0 0 
+			--yesno "Voce tem certeza que deseja criar o arquivo? $arq no $caminho" 0 0 
 		fi
 	else
 		gfile
@@ -632,9 +632,9 @@ excf (){
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo a ser deletado!" 0 0
 			excf
 		else
-			dialog --title "Confirmação" \
-			--backtitle "Atenção" \
-			--yesno "Você tem certeza que deseja deletar o arquivo?" 7 50
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
+			--yesno "Voce tem certeza que deseja deletar o arquivo?" 7 50
 			if [ "$?" == "0" ]; then
 				rm $delf
 				dialog --msgbox "Arquivo deletado com sucesso!" 0 0
@@ -678,9 +678,9 @@ locf (){
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um local!" 0 0
 			locf
 		else	
-			dialog --title "Confirmação" \
-			--backtitle "Atenção" \
-			--yesno "Você tem certeza que deseja mover o arquivo $mova para o local $loca ?" 7 50
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
+			--yesno "Voce tem certeza que deseja mover o arquivo $mova para o local $loca ?" 7 50
 		fi
 		if [ "$?" == "0" ]; then
 			mv $mova $loca	
@@ -722,9 +722,9 @@ filr() {
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um novo nome para o arquivo!" 0 0
 			filr
 		else
-			dialog --title "Confirmação" \
-			--backtitle "Atenção" \
-			--yesno "Você tem certeza que deseja renomear o arquivo $rena para o local $arqn ?" 7 50
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
+			--yesno "Voce tem certeza que deseja renomear o arquivo $rena para o local $arqn ?" 7 50
 		fi
 		if [ "$?" == "0" ]; then
 			cp $rena $arqn
@@ -769,8 +769,8 @@ locd() {
 			o=$?
 			if (( $o == 1 )); then			
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Local do destino nao existe!!!" 0 0
-				dialog --title "Confirmação" \
-				--backtitle "Atenção" \
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
 				--yesno "Gostaria de selecionar o destino novamente?" 7 50
 				if (( $? == 0 )); then
 					locd
@@ -797,13 +797,13 @@ deld() {
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio obrigatorio!!!" 0 0 
 			deld
 		else
-			dialog --title "Confirmação" \
-			--backtitle "Atenção" \
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
 			--yesno "Apagar $dird?" 7 50
 			if (( $? == 0 )); then
 				if [ "$dird" == "/" ]; then
-					dialog --title "Confirmação" \
-					--backtitle "Atenção" \
+					dialog --title "Confirmacao" \
+					--backtitle "Atencao" \
 					--yesno "Voce vai fazer cagada! deseja mesmo continuar??" 7 150
 					u=$?
 					if (( $u == 0 )); then
@@ -870,8 +870,8 @@ arql() {
 			tar -cvf $loar/$narq $comp
 			t=$?
 			if (( $t == 2 ));then
-				dialog --title "Confirmação" \
-				--backtitle "Atenção" \
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
 				--yesno "Gostaria de criar o diretorio ?" 7 50
 				if (( $? == 0 )); then
 					mkdir $loar
@@ -907,7 +907,7 @@ desc=$(dialog --title "Descompactar arquivo" \
 }
 desl() {
 locd=$(dialog --title "Descompactar arquivo" \
-	--stdout --title "Selecione o destino da descompactação do arquivo" \
+	--stdout --title "Selecione o destino da descompactacao do arquivo" \
 	--fselect /home/ 0 0)
 	t=$?
 	if (( $t == 0 )); then
