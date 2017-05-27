@@ -1050,6 +1050,28 @@ gdar() {
 }
 
 perf() {
+	dirp=$(dialog --title "Selecione Arquivo" \
+	--stdout --title "Selecione o arquivo ou diretorio que sofrera alteracao de permissionamento" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $dirp ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			perf
+		else
+			ls $dirp
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio ou arquivo nao existe!" 0 0
+				perf
+			else
+				pdon
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+pdon() {
 	t=$(dialog 					\
 	--stdout					\
 	--title 'Permissionamento Dono'			\
@@ -1063,27 +1085,35 @@ perf() {
 	if (( $? == 0 )); then
 		if [ -z $t ]; then
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
-			perf	 
+			pdon 
 		else
 			if [ "$t" == "R W X" ]; then
 				d=7
+				pgru
 			elif [ "$t" == "R W " ]; then
 				d=6	
+				pgru
 			elif [ "$t" == "R X" ]; then
 				d=5	
+				pgru
 			elif [ "$t" == "R" ]; then
 				d=4	
+				pgru
 			elif [ "$t" == "W X" ]; then
 				d=3	
+				pgru
 			elif [ "$t" == "W" ]; then
 				d=2	
+				pgru
 			elif [ "$t" == "X" ]; then
 				d=1	
+				pgru
 			elif [ "$t" == "0" ]; then
 				d=0	
+				pgru
 			else
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
-				perf		
+				pdon		
 			fi
 		fi
 	else
@@ -1109,20 +1139,28 @@ pgru() {
 		else
 			if [ "$t" == "R W X" ]; then
 				g=7
+				pout
 			elif [ "$t" == "R W " ]; then
 				g=6	
+				pout
 			elif [ "$t" == "R X" ]; then
 				g=5	
+				pout
 			elif [ "$t" == "R" ]; then
 				g=4	
+				pout
 			elif [ "$t" == "W X" ]; then
 				g=3	
+				pout
 			elif [ "$t" == "W" ]; then
 				g=2	
+				pout
 			elif [ "$t" == "X" ]; then
 				g=1	
+				pout
 			elif [ "$t" == "0" ]; then
 				g=0	
+				pout
 			else
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
 				pgru		
@@ -1132,9 +1170,6 @@ pgru() {
 		gperm
 	fi
 }
-
-
-
 
 pout() {
 	t=$(dialog 					\
@@ -1154,20 +1189,44 @@ pout() {
 		else
 			if [ "$t" == "R W X" ]; then
 				o=7
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
+				gperm
 			elif [ "$t" == "R W " ]; then
 				o=6	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
 			elif [ "$t" == "R X" ]; then
 				o=5	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
 			elif [ "$t" == "R" ]; then
 				o=4	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
 			elif [ "$t" == "W X" ]; then
 				o=3	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
 			elif [ "$t" == "W" ]; then
 				o=2	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
 			elif [ "$t" == "X" ]; then
 				o=1	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
 			elif [ "$t" == "0" ]; then
 				o=0	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
 			else
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
 				pout		
