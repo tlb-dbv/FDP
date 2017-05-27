@@ -30,14 +30,27 @@ case $mhome in
 6) grpto ;;
 7) gperm ;;
 8) gprgm ;;
-9) exit ;;
+9) clear ;
+(
+while :
+do
+cat << EOF
+XXX
+$counter
+Finalizando Processos ( $counter% ):
+XXX
+EOF
+(( counter+=10 ))
+[ $counter == 110 ] && break
+sleep 1
+done
+) |
+dialog --title "Aguarde um momento" --gauge "Please wait" 7 70 0
+clear
+exit
 esac
-t=$?
 }
 
-teste (){
-echo "OI"
-}
 ######################## FIM DO MENU PRINCIPAL ###############################
 
 ####################### MENU GERENCIAMENTO DE USUARIO ########################
@@ -55,7 +68,7 @@ case $musur in
 
 1) criu ;;
 2) excu ;;
-3) altn ;;
+3) anom ;;
 4) alts ;;
 5) list ;;
 6) volu ;;
@@ -77,7 +90,7 @@ mgrup=$(dialog --stdout --title "Gerenciamento de Grupos"\
 case $mgrup in
 
 1) crig ;;
-2) excg ;;
+2) egru ;;
 3) adug ;;
 4) exug ;;
 5) lisg ;;
@@ -184,19 +197,17 @@ gperm(){
 
 mperm=$(dialog --stdout --title "Gerenciamento de Permissionamento"\
 	    --menu "Escolha uma opcao" 0 0 0 	\
-1 "Dono de um arquivo" \
-2 "Grupo de um arquivo" \
-3 "Permissao do usuario em um arquivo" \
-4 "Permissao de um grupo em um arquivo" \
-5 "Voltar" )
+1 "Alterar o dono de um arquivo" \
+2 "Alterar o grupo de um arquivo" \
+3 "Permissao de um arquivo" \
+4 "Voltar" )
 
 case $mperm in
 
 1) parq ;;
 2) pgru ;;
-3) pusr ;;
-4) pgru ;;
-5) volu ;;
+3) perf ;;
+4) volu ;;
 esac
 }
 ################ FIM DO MENU GERENCIAMENTO DE PERMISSIONAMENTO ################
@@ -325,8 +336,9 @@ excu(){
 				dialog --title "Confirmacao"		\
 				--backtitle "Atencao"		\
 				--yesno "Voce tem ceteza que deseja deletar o usuario "$user" ?" 7 50
+			t=$?
 			fi
-			if [ "$?" == "0" ]; then
+			if (( $t == 0 )); then
 				deluser $user
 				t=$?
 				if (( $t != 0 )); then
@@ -348,16 +360,15 @@ excu(){
 ###################### FIM DO MENU PARA EXCLUIR USUARIOS ######################
 
 ######################## MENU ALTERAR NOME DE USUARIOS ########################
-altn(){
-clear
-	tail -f /etc/passwd > out1 &
-	dialog --title "Lista de usuarios" --tailbox out1 0 0
-	user=$(dialog --stdout	\
-	      --inputbox "Digite o nome do usu�rio a ser modificado:" 0 60)
+anom(){
+	#tail -f /etc/passwd > out1 &
+	#dialog --title "Lista de usuarios" --tailbox out1 0 0
+	altn=$(dialog --stdout	\
+	      --inputbox "Digite o nome do usuario a ser modificado:" 0 60)
 		if (( $? == 0 )); then
-			if [ -z $user ]; then
+			if [ -z $altn ]; then
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
-				altn
+				anom
 			else
 				musu
 			fi
@@ -367,15 +378,15 @@ clear
 }
 musu(){
 	mvuser=$(dialog --stdout	\
-       		--inputbox "Digite o novo nome do usu�rio:" 0 50)
+       		--inputbox "Digite o novo nome do usuario:" 0 50)
 	if (( $? == 0 )); then
-		if [ -z $user ]; then
+		if [ -z $mvuser ]; then
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0
 			musu
 		else 
-			dialog --title " Confirma��o"	\
-				--backtitle "Aten��o"	\
-				--yesno "Voc� tem certeza que deseja renomear o usu�rio "$user" ?" 7 60
+			dialog --title " Confirmacao"	\
+				--backtitle "Atencao"	\
+				--yesno "Voc� tem certeza que deseja renomear o usu�rio "$altn" ?" 7 60
 			if (( $? == 0 )); then
 				rena
 			else
@@ -388,14 +399,14 @@ musu(){
 }
 ##################### Comando para renomear usu�rio ################
 rena() {
-	usermod -l $mvuser $user
+	usermod -l $mvuser $altn
 	t=$?
 	if (( $t != 0 )); then
-		dialog --aspect 50 --msgbox "Usu�rio "$user" nao existe!" 0 0
+		dialog --aspect 50 --msgbox "Usuario "$altn" nao existe!" 0 0
 			gusur
  
 	else
-		dialog --aspect 50 --msgbox "Usu�rio "$user" renomeado para $mvuser" 0 0
+		dialog --aspect 50 --msgbox "Usuario "$altn" renomeado para $mvuser" 0 0
 		gusur
 	fi
 #	else
@@ -427,8 +438,6 @@ volu(){
 }
 ############################## FIM DO MENU VOLTAR ##############################
 
-
-
 crig() {
 	mcrig=$(dialog --stdout	\
        		--inputbox "Digite o nome do grupo a ser criado:" 0 50)
@@ -445,7 +454,7 @@ crig() {
 	fi
 }
 
-excg() {
+egru() {
 	tail -f /etc/group > out1 &
 	dialog --title "Lista de grupos" --tailbox out1 0 0
 	grup=$(dialog --stdout	\
@@ -464,10 +473,10 @@ excg() {
 				delgroup $grup
 				t=$?
 				if (( $t != 0 )); then
-					dialog --aspect 50 --msgbox "Grupo "$grup" nao existe!" 0 0
+					dialog --aspect 50 --msgbox "Grupo $grup nao existe!" 0 0
 					ggrup
 				else
-					dialog --aspect 50 --msgbox "Grupo "$gru" deletado com sucesso!" 0 0
+					dialog --aspect 50 --msgbox "Grupo $grup deletado com sucesso!" 0 0
 					ggrup
 				fi
 			else
@@ -732,8 +741,6 @@ filr() {
 }
 
 
-
-
 crid() {
 	dirc=$(dialog --stdout	\
 		--inputbox "Digite o nome do diretorio a ser criado:" 0 50)
@@ -918,7 +925,7 @@ locd=$(dialog --title "Descompactar arquivo" \
 
 parq() {
 	dono=$(dialog --stdout	\
-		--inputbox "Digite o nome do usuario a ser adiconado como dono do arquivo ou diretorio:" 0 50)
+		--inputbox "Digite o nome do usuario a ser adicionado como dono do arquivo ou diretorio:" 0 50)
 		if (( $? == 0 )); then
 			if [ -z $dono ]; then
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario obrigatorio!!!" 0 0 
@@ -946,6 +953,7 @@ darq() {
 				darq
 			else
 				chown $dono $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracao feita com sucesso!" 0 0
 				gperm
 			fi
 		fi
@@ -953,118 +961,134 @@ darq() {
 		gperm
 	fi
 }
-mprin
-pgru() {
-
-}
-pusr() {
-
-}
-
-pgru() {
-
-}
-
-
-
-####################### MENU PERMISSIONAMENTO DE USUARIOS #######################
-#perm(){
-#	dialog --stdout --msgbox "1" 0 0
-#}
-#################### FIM DO MENU PERMISSIONAMENTO DE USUARIO ###################
-
-##############################################################################
-#                 FIM DAS FUNCOES DO MENU PRINCIPAL	                     #
-##############################################################################
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
-########################### Função Mudar a senhao #####################
-function senhauser() {
-clear
-
-user=$(dialog --stdout							\
-	      --inputbox "Digite o nome do usuário a ser modificado a senha:" 0 60)
-
-
-	if [ -z $user ]; then
-		dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo nome de usuário é obrigatório!!!" 0 0 
-		cuser
+gdar() {
+	dfig=$(dialog --title "Altera grupo de um arquivo" \
+	--stdout --title "Selecione o arquivo ou diretorio que sofrera alteracao do grupo" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $dfig ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			gdar
+		else
+			ls $dfig
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio ou arquivo nao existe!" 0 0
+				gdar
+			else
+				chgrp $grup $dfig
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracao feita com sucesso!" 0 0
+				gperm
+			fi
+		fi
+	else
+		gperm
 	fi
-##########################################################################
+}
 
-#senha=$(dialog --stdout	--insecure					\
-#	        --passwordbox  "Digite a nova senha do usuário:" 0 50)
-#
-#dialog --title " Confirmação"	\
-#	--backtitle "Atenção"	\
-#	--yesno "Você tem certeza que deseja alterar a senha do usuário "$user" ?" 7 60
+perf() {
+	t=$(dialog 					\
+	--stdout					\
+	--title 'Permissionamento Dono'			\
+	--checklist 'O que o dono vai poder fazer ?' 	\
+	0 0 0						\
+	R	'Leitura/Visualizar' 	   off		\
+	W	'Gravacao/Escrever/Apagar' off		\
+	X	'Execucao/Acessar'	   off		\
+	0	'Nada'			   off)	
+	i=$?
+	if (( $i == 0 )); then
+		if [ -z $t ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			perf	 
+		else
+			if [ "$t" == "R W X" ]; then
+				d=7
+			elif [ "$t == "R W " ]; then
+				d=6	
+			elif [ "$t == "R X" ]; then
+				d=5	
+			elif [ "$t == "R" ]; then
+				d=4	
+			elif [ "$t == "W X" ]; then
+				d=3	
+			elif [ "$t == "W" ]; then
+				d=2	
+			elif [ "$t == "X" ]; then
+				d=1	
+			elif [ "$t == "0" ]; then
+				d=0	
+			else
+				perf		
+			fi
+		fi
+	else
+		perf
+	fi
+}
+mprin
+ipct() {
+	insp=o$(dialog --stdout	\
+		--inputbox "Digite o nome do digite o nome do pacote a ser instalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $insp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
+				ipct
+			else
+				apt-get install $insp
+				if (( $? != 0 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote instalado com sucesso!!!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
 
-##################### Comando para renomear usuário ################
+dpct() {
+	delp=o$(dialog --stdout	\
+		--inputbox "Digite o nome do digite o nome do pacote que sera desinstalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $delp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
+				dpct
+			else
+				apt-get remove $delp
+				if (( $? != 0 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote desinstalado com sucesso!!!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
 
-#	if [ -z $senha ]; then
-#		dialog --aspect 45 --backtitle "Atenção" --msgbox "O campo senha é obrigatório! Tente novamente!" 0 0 
-#		if [ "$?" == "0" ]; then
-#		menu1
+
+#lpct() {
+#	ls /usr/bin/ > out1 &
+#	dialog --title "Pacotes Instaldos" --tailbox out1 0 0
+#}
+#pgru() {
+#	grup=$(dialog --stdout	\
+#		--inputbox "Digite o nome do grupo a ser modificado como grupo do arquivo ou diretorio:" 0 50)
+#		if (( $? == 0 )); then
+#			if [ -z $grup ]; then
+#				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+#				pgru
+#			else
+#				gdar
+#			fi
 #		else
-#		menu1
+#			gperm
 #		fi
-#	fi
-#
-#	senha1=$(dialog --stdout --insecure		\
-#		--passwordbox "Confirme a senha:" 0 0 )	\
-#
-#
-#
-#################### Comparação das senhas ##########################
-#
-#	if [ $senha != "$senha1" ]; then
-#		dialog --yesno "A senha informada não confere!!! \
-#		Deseja tentar novamente?" 7 40
-#
-#		if [ "$?" == "0" ]; then
-#		menu1
-#		else
-#		menu1
-#		fi
-#	fi
-########## Solicitação da confirmação da criação do usuário ##############
-#
-#	dialog  --title "Confirmação"		\
-#		--backtitle "Atenção"		\
-#		--yesno "Você tem certeza que deseja alterar a senha do usuário "$user" ?" 7 60
-#
-################# Comparação da escolha do usuário Sim ou Não  ##################
+#}
+#mprin
 
-#if [ "$?" == "0" ]; then
-
-#passwd  $user
-
-#dialog --aspect 50 --msgbox "Usuário "$user" renomeado com sucesso!" 0 0
-#
-#tail -f /etc/passwd > out2 &
-#dialog --title "Lista de usuários" --tailbox out out2 0 0 
-#
-#else
-
-#dialog --msgbox "Procedimento Cancelado!" 0 0
-
-#tail -f /etc/passwd > out2 &
-#dialog --title "Lista de usuários" --tailbox out out2 0 0 
-
-#
-#
-#
-#
