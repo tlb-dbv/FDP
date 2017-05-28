@@ -133,23 +133,15 @@ esac
 grede(){
 mrede=$(dialog --stdout --title "Gerenciamento de Interface de Rede"\
 	    --menu "Escolha uma opcao" 0 0 0 	\
-1 "Configurar IP"		 \
-2 "Configurar Mask"		 \
-3 "Configurar Gateway"		 \
-4 "Configurar Brodcast"		 \
-5 "Configurar ID da rede"	 \
-6 "Configurar o Nome da Maquina" \
-7 "Voltar")
+1 "Configurar Interface de rede"		\
+2 "Configurar nome da maquina"			\
+3 "Voltar")
 
 case $mrede in
 
-1) coip ;;
-2) coma ;;
-3) coga ;;
-4) cobr ;;
-5) coid ;;
-6) conh ;;
-7) volu ;;
+1) coni ;;
+2) conh ;;
+3) volu ;;
 esac
 }
 ##################### FIM DO MENU GERENCIAMENTO DE REDES ######################
@@ -922,6 +914,389 @@ locd=$(dialog --title "Descompactar arquivo" \
 		gfile
 	fi
 }
+
+
+
+coni() {
+	dialog --title "Confirgurar Loopback" \
+	--backtitle "Atencao" \
+	--yesno "Voce gostaria de configurar o loopback ?" 7 150
+	z=$?
+	if (( $z == 0 )); then
+		loop
+	else
+		lop=1
+		coip
+	fi
+
+}
+loop() {
+	lip=$(dialog --stdout \
+	--inputbox "Digite o IP:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $lip ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite um IP!" 0 0
+			loop
+		else
+			loma
+		fi
+	else
+		grede
+	fi
+}
+loma() {
+	lmask=$(dialog --stdout \
+	--inputbox "Digite a mascara da rede:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $lmask ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita mascara de rede!" 0 0
+			loma
+		else
+			lop=0
+			dialog --title "Confirgurar Interfaces" \
+			--backtitle "Atencao" \
+			--yesno "Voce gostaria de configurar a interface fisica de rede?" 7 150
+			u=$?
+			if (( $u != 0 )); then
+				k=1
+				dialog --title "Confirgurar Interfaces" \
+				--backtitle "Atencao" \
+				--yesno "Voce gostaria de configurar a interface wirelles?" 7 150
+				c=$?
+				if (( $c != 0 )); then
+					echo "source /etc/network/interfaces.d/*
+					auto lo
+					iface lo inet static
+					address $lip
+					netmask $lmask 
+					auto eth0
+					iface eth0 inet dhcp 
+					auto wlan0
+					iface wlan0 inet dhcp" > /etc/network/interfaces
+					/etc/init.d/networking restart
+					grede
+				else
+					cowi
+				fi
+			else
+				k=0
+				coip
+			fi
+		fi
+	else
+		grede
+	fi
+}
+coip() {
+	dialog --title "Confirgurar Interface" \
+	--backtitle "Atencao" \
+	--yesno "Gostaria de configurar a interface eth0 ?" 7 150
+	k=$?
+	if (( $k != 0 )); then
+		k=1
+		cowi
+	else
+		k=0
+		cip
+	fi
+}
+cip() {
+		dialog --title "Confirgurar Interface" \
+		--backtitle "Atencao" \
+		--yesno "Deixar a interface eth0 em dhcp?" 7 150
+		u=$?
+		if (( $u != 0 )); then
+			ip=$(dialog --stdout \
+			--inputbox "Digite o IP:" 0 0)
+			t=$?
+			if (( $t == 0 )); then
+				if [ -z $ip ]; then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite um IP!" 0 0
+					cip
+				else
+					conm
+				fi
+			else
+				grede
+			fi
+		else
+			codh=1
+			cint
+		fi
+}
+conm() {
+	mask=$(dialog --stdout \
+	--inputbox "Digite a mascara da rede:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $mask ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita mascara de rede!" 0 0
+			conm
+		else
+			cong
+		fi
+	else
+		grede
+	fi
+}
+cong() {
+	gate=$(dialog --stdout \
+	--inputbox "Digite o GATEWAY:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $gate ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite Gateway!" 0 0
+			cong
+		else
+			cond
+		fi
+	else
+		grede
+	fi
+}
+cond() {
+	dns=$(dialog --stdout \
+	--inputbox "Digite o DNS:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $dns ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o DNS!" 0 0
+			cond
+		else
+			codh=0
+			cint
+		fi
+	else
+		grede
+	fi
+}
+cint() {
+	if (( $lop == 0 && $codh == 0 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet static
+		address $lip
+		netmask $lmask 
+	
+		auto eth0
+		iface eth0 inet static
+		address $ip
+		netmask $mask
+		gateway $gate" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	elif (( $lop == 0 && $codh == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet static
+		address $lip
+		netmask $lmask 
+	
+		auto eth0
+		iface eth0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	elif (( $lop == 1 && $codh == 0 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet loopback
+	
+		auto eth0
+		iface eth0 inet static
+		address $ip
+		netmask $mask
+		gateway $gate" > /etc/network/interfaces
+		echo "nameserver $dns" > /etc/resolv.conf 
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	elif (( $lop == 1 && $codh == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet loopback
+		
+		auto eth0 
+		iface eth0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	fi		
+			
+}
+cowi() {
+	dialog --title "Confirgurar Interface" \
+	--backtitle "Atencao" \
+	--yesno "Configurar a interface wirelles no modo dhcp?" 7 150
+	u=$?
+	if (( $u != 0 )); then
+		wip=$(dialog --stdout \
+		--inputbox "Digite o IP:" 0 0)
+		i=$?
+		if (( $i == 0 )); then
+			if [ -z $wip ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita o IP!" 0 0
+				cowi
+			else
+				w=1
+				cmask
+			fi
+		else
+			grede
+		fi
+	else
+		w=0
+		conw
+	fi
+}
+cmask() { 
+	wmask=$(dialog --stdout \
+	--inputbox "Digite o Mascara de rede:" 0 0)
+	i=$?
+	if (( $i == 0 )); then
+		if [ -z $wip ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita o IP!" 0 0
+			cmask
+		else
+			cgate
+		fi
+	else
+		grede
+	fi
+}
+cgate() {
+	wgate=$(dialog --stdout \
+	--inputbox "Digite o Gateway:" 0 0)
+	i=$?
+	if (( $i == 0 )); then
+		if [ -z $wip ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita o IP!" 0 0
+			cgate
+		else
+			conw
+		fi
+	else
+		grede
+	fi
+}
+conw() {
+	if (( $w == 0 && $z == 1 && $k == 1 )); then 
+		echo "source /etc/network/interfaces.d/*
+		auto wlan0
+		iface wlan0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restar
+		grede
+	elif (( $w == 1 && $z == 1 && $k == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 0 && $z == 0 && $k == 1 )); then 
+		echo "source /etc/network/interfaces.d/*
+		iface lo inet static
+		address $lip
+		netmask $lmask 
+		auto eth0
+		iface eth0 inet dhcp 
+		auto wlan0
+		iface wlan0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 1 && $z == 0 && $k == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		iface lo inet static
+		address $lip
+		netmask $lmask
+		auto eth0
+		iface eth0 inet dhcp 
+		echo auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 0 && $z == 1 && $k == 0 )); then 
+		echo "
+		auto wlan0
+		iface wlan0 inet dhcp" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 1 && $z == 1 && $k == 0 )); then
+		echo "auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 0 && $z == 0 && $k == 0 )); then 
+		echo "
+		auto wlan0
+		iface wlan0 inet dhcp" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 1 && $z == 0 && $k == 0 )); then
+		echo "
+		auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	fi
+}
+
+#conh() {
+#
+#}
+
+
+
+
+
+
+
+
+
+
+
 ipct() {
 	insp=o$(dialog --stdout	\
 		--inputbox "Digite o nome do pacote a ser instalado" 0 50)
