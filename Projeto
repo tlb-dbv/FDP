@@ -16,7 +16,7 @@ mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
 4 "Gerenciar Rede Local"	\
 5 "Gerenciar Dispositivos"	\
 6 "Gerenciar Repositorio"	\
-7 "Gerenciar Permissionamento"	\
+7 "Gerenciar Permissoes"	\
 8 "Gerenciar Script"		\
 9 "Sair")
 
@@ -241,11 +241,21 @@ criu(){
 		if [ -z $user ]; then
 			dialog --aspect 45 --backtitle "Atencao" --msgbox "O campo nome de usuario e obrigatorio!!!" 0 0 
 			criu
+		else
+			useradd $user 
+			t=$?
+			if (( $t == 9 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $user ja existe!!!" 0 0 
+				criu
+			else
+				deluser $user
+				cris
+			fi
+			
 		fi
 	else
 		gusur
 	fi
-		cris
 }
 ################# Solicitacao da senha ###############################
 
@@ -578,7 +588,7 @@ lisg() {
 	ggrup
 }
 ################### MENU CRIAR ARQUIVO ##############################
-crif (){
+crif() {
 	clear
 	arq=$(dialog --stdout \
 		--inputbox "Digite o nome do arquivo a ser criado:" 0 0)
@@ -588,27 +598,45 @@ crif (){
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite um nome para o arquivo!!!" 0 0
 			crif
 		else
-			caminho=$(dialog --title "Criar arquivo" \
-			--stdout --title "Selecione o local onde sera salvo o arquivo" \
-			--fselect /home/ 0 0)
-
-			dialog --title "Confirmacao" \
-			--backtitle "Atencao" \
-			--yesno "Voce tem certeza que deseja criar o arquivo? $arq no $caminho" 0 0 
+			cami
 		fi
 	else
 		gfile
 	fi
-		if [ "$?" == "0" ]; then
-			> $caminho$arq
-			dialog --msgbox "Arquivo criado com sucesso!" 0 0
-			ls -la $caminho$arq > out4 &
-			dialog --title "Lista de arquivos" --tailbox out4 0 0
-			gfile
+}
+cami() {
+	caminho=$(dialog --title "Criar arquivo" \
+	--stdout --title "Selecione o local onde sera salvo o arquivo" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $caminho ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um local!" 0 0
+			cami
 		else
-			dialog --msgbox "Procedimento Cancelado!" 0 0
-			gfile
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
+			--yesno "Voce tem certeza que deseja criar o arquivo? $arq no $caminho" 0 0 
+			if [ "$?" == "0" ]; then
+				> $caminho$arq
+				t=$?
+				if (( $t == 0 )); then
+					dialog --msgbox "Arquivo criado com sucesso!" 0 0
+					ls -la $caminho$arq > out4 &
+					dialog --title "Lista de arquivos" --tailbox out4 0 0
+					gfile
+				else
+					dialog --msgbox "Local nao existe!" 0 0
+					cami
+				fi
+			else
+				dialog --msgbox "Procedimento Cancelado!" 0 0
+				gfile
+			fi
 		fi
+	else
+		gfile
+	fi
 }
 
 ################################ Função Deletar Arquivos ####################################
@@ -624,19 +652,26 @@ excf (){
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo a ser deletado!" 0 0
 			excf
 		else
-			dialog --title "Confirmacao" \
-			--backtitle "Atencao" \
-			--yesno "Voce tem certeza que deseja deletar o arquivo?" 7 50
-			if [ "$?" == "0" ]; then
-				rm $delf
-				dialog --msgbox "Arquivo deletado com sucesso!" 0 0
-				ls -la $delf > out5 &
-				dialog --title "Lista de arquivos" --tailbox out5 0 0
-				gfile	
+			ls $delf
+			if (( $? == 0 )); then	
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Voce tem certeza que deseja deletar o arquivo?" 7 50
+				if [ "$?" == "0" ]; then
+					rm $delf
+					dialog --msgbox "Arquivo deletado com sucesso!" 0 0
+					ls -la $delf > out5 &
+					dialog --title "Lista de arquivos" --tailbox out5 0 0
+					gfile	
+				else
+					dialog --msgbox "Procedimento Cancelado!" 0 0
+					gfile
+				fi
 			else
-				dialog --msgbox "Procedimento Cancelado!" 0 0
+				dialog --msgbox "Arquivo nao existe!" 0 0
 				gfile
 			fi
+				
 		fi
 	else
 		gfile
@@ -654,7 +689,13 @@ movf (){
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha o arquivo!" 0 0
 			movf
 		else
-			locf
+			ls $mova
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				movf
+			else
+				locf
+			fi
 		fi
 	else
 		gfile
@@ -669,20 +710,26 @@ locf (){
 		if [ -z $loca ]; then
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um local!" 0 0
 			locf
-		else	
-			dialog --title "Confirmacao" \
-			--backtitle "Atencao" \
-			--yesno "Voce tem certeza que deseja mover o arquivo $mova para o local $loca ?" 7 50
-		fi
-		if [ "$?" == "0" ]; then
-			mv $mova $loca	
-			dialog --msgbox "Arquivo renomeado com sucesso!" 0 0
-			ls -la $loca > out6 &
-			dialog --title "Lista de arquivos" --tailbox out6 0 0
-			gfile
 		else
-			dialog --msgbox "Procedimento Cancelado!" 0 0
-			gfile
+			ls $loca	
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Local nao existe!" 0 0
+				locf
+			else
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Voce tem certeza que deseja mover o arquivo $mova para o local $loca ?" 7 50
+				if [ "$?" == "0" ]; then
+					mv $mova $loca	
+					dialog --msgbox "Arquivo renomeado com sucesso!" 0 0
+					ls -la $loca > out6 &
+					dialog --title "Lista de arquivos" --tailbox out6 0 0
+					gfile
+				else
+					dialog --msgbox "Procedimento Cancelado!" 0 0
+					gfile
+				fi
+			fi
 		fi
 	else
 		gfile
@@ -699,12 +746,19 @@ renf() {
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
 			renf
 		else
-			filr
+			ls $rena
+			if (( $? == 2 ));then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				renf
+			else
+				filr
+			fi
 		fi
 	else
 		gfile
 	fi
 }
+
 filr() {
 	arqn=$(dialog --stdout \
 		--inputbox "Digite o novo nome do arquivo:" 0 0)
@@ -719,8 +773,9 @@ filr() {
 			--yesno "Voce tem certeza que deseja renomear o arquivo $rena para o local $arqn ?" 7 50
 		fi
 		if [ "$?" == "0" ]; then
-			cp $rena $arqn
-			rm $rena	
+			
+			mv $rena $arqn
+			#rm $rena	
 			dialog --msgbox "Arquivo renomeado com sucesso!" 0 0
 			gfile
 		else
