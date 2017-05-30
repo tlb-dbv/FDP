@@ -197,7 +197,7 @@ mperm=$(dialog --stdout --title "Gerenciamento de Permissionamento"\
 case $mperm in
 
 1) parq ;;
-2) pgru ;;
+2) pgrp ;;
 3) perf ;;
 4) volu ;;
 esac
@@ -464,7 +464,7 @@ egru() {
 		if (( $? == 0 )); then
 			if [ -z $grup ]; then
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
-				excg
+				egru
 			else
 				dialog --title "Confirmacao"		\
 				--backtitle "Atencao"		\
@@ -844,27 +844,33 @@ deld() {
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio obrigatorio!!!" 0 0 
 			deld
 		else
-			dialog --title "Confirmacao" \
-			--backtitle "Atencao" \
-			--yesno "Apagar $dird?" 7 50
-			if (( $? == 0 )); then
-				if [ "$dird" == "/" ]; then
-					dialog --title "Confirmacao" \
-					--backtitle "Atencao" \
-					--yesno "Voce vai fazer cagada! deseja mesmo continuar??" 7 150
-					u=$?
-					if (( $u == 0 )); then
-						dialog --aspect 40 --backtitle "Atencao" --msgbox "Impossivel apagar esse diretorio!!!" 0 0 
-						gfile
+			ls $dird
+			if (( $? == 2 ));then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio nao existe!" 0 0
+				deld
+			else
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Apagar $dird?" 7 50
+				if (( $? == 0 )); then
+					if [ "$dird" == "/" ]; then
+						dialog --title "Confirmacao" \
+						--backtitle "Atencao" \
+						--yesno "Voce vai fazer cagada! deseja mesmo continuar??" 7 150
+						u=$?
+						if (( $u == 0 )); then
+							dialog --aspect 40 --backtitle "Atencao" --msgbox "Impossivel apagar esse diretorio!!!" 0 0 
+							gfile
+						else
+							gfile
+						fi
 					else
+						rm -rf $dird
 						gfile
 					fi
 				else
-					rm -rf $dird
 					gfile
 				fi
-			else
-				gfile
 			fi
 		fi			
 	else
@@ -874,16 +880,22 @@ deld() {
 
 ####################### Compactar Arquivo #############################	
 comf() {
-	comp=$(dialog --title "Compactar arquivo" \
+	compa=$(dialog --title "Compactar arquivo" \
 	--stdout --title "Selecione o arquivo que sera compactado" \
 	--fselect /home/ 0 0)
 	t=$?
 	if (( $t == 0 )); then
-		if [ -z $comp ]; then
+		if [ -z $compa ]; then
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
 			comf
 		else
-			coma
+			ls $compa
+			if (( $? == 0 )); then	
+				coma
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				comf
+			fi
 		fi
 	else
 		gfile
@@ -914,7 +926,7 @@ arql() {
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
 			arql
 		else
-			tar -cvf $loar/$narq $comp
+			tar -cvf $loar/$narq.tar $compa
 			t=$?
 			if (( $t == 2 ));then
 				dialog --title "Confirmacao" \
@@ -922,7 +934,7 @@ arql() {
 				--yesno "Gostaria de criar o diretorio ?" 7 50
 				if (( $? == 0 )); then
 					mkdir $loar
-					tar -cvf $loar/$narq $comp
+					tar -cvf $loar/$narq.tar $compa
 					gfile
 				else
 					gfile
@@ -946,11 +958,17 @@ desc=$(dialog --title "Descompactar arquivo" \
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo a ser descompactado!" 0 0
 				desf
 			else
-				desl
+				ls $desc
+				if (( $? == 0 )); then	
+					desl
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+					desf
+				fi
 			fi
-	      else
+		else
 			gfile
-	      fi
+		fi
 }
 desl() {
 locd=$(dialog --title "Descompactar arquivo" \
@@ -962,16 +980,19 @@ locd=$(dialog --title "Descompactar arquivo" \
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "E necessario escolher um local!" 0 0
 			desl
 		else
-			tar -xvf $desc -C $locd
-			gfile
+			ls $locd
+			if (( $? == 2 )); then	
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				desl
+			else
+				tar -xvf $desc -C $locd
+				gfile
+			fi
 		fi
 	else
 		gfile
 	fi
 }
-
-
-
 coni() {
 	dialog --title "Confirgurar Loopback" \
 	--backtitle "Atencao" \
@@ -1345,15 +1366,8 @@ conw() {
 
 
 
-
-
-
-
-
-
-
 ipct() {
-	insp=o$(dialog --stdout	\
+	insp=$(dialog --stdout	\
 		--inputbox "Digite o nome do pacote a ser instalado" 0 50)
 		if (( $? == 0 )); then
 			if [ -z $insp ]; then
@@ -1361,11 +1375,12 @@ ipct() {
 				ipct
 			else
 				apt-get install $insp
-				if (( $? != 0 )); then
+				t=$?
+				if (( $t != 0 )); then
 					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
 					grpto
 				else
-					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote instalado com sucesso!!!" 0 0 
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote instalado com sucesso !!!" 0 0 
 					grpto
 				fi
 			fi
@@ -1375,7 +1390,7 @@ ipct() {
 }
 
 dpct() {
-	delp=o$(dialog --stdout	\
+	delp=$(dialog --stdout	\
 		--inputbox "Digite o nome do digite o nome do pacote que sera desinstalado" 0 50)
 		if (( $? == 0 )); then
 			if [ -z $delp ]; then
@@ -1401,20 +1416,6 @@ lpct() {
 	ls /usr/bin/ > out1 &
 	dialog --title "Pacotes Instaldos" --tailbox out1 0 0
 }
-pgru() {
-	grup=$(dialog --stdout	\
-		--inputbox "Digite o nome do grupo a ser modificado como grupo do arquivo ou diretorio:" 0 50)
-		if (( $? == 0 )); then
-			if [ -z $grup ]; then
-				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
-				pgru
-			else
-				gdar
-			fi
-		else
-			gperm
-		fi
-}
 
 parq() {
 	dono=$(dialog --stdout	\
@@ -1424,7 +1425,14 @@ parq() {
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario obrigatorio!!!" 0 0 
 				parq
 			else
-				darq
+				usermod -l $dono $dono
+				t=$?
+				if (( $t == 0 )); then
+					darq
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario nao existe!!!" 0 0 
+					parq
+				fi	
 			fi
 		else
 			gperm
@@ -1453,6 +1461,27 @@ darq() {
 	else
 		gperm
 	fi
+}
+pgrp() {
+	grup=$(dialog --stdout	\
+		--inputbox "Digite o nome do grupo a ser modificado como grupo do arquivo ou diretorio:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $grup ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+				pgrp
+			else
+				delgroup $grup
+				if (( $? == 0 )); then
+					groupadd $grup
+					gdar
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo nao existe!!!" 0 0 
+					pgrp
+				fi
+			fi
+		else
+			gperm
+		fi
 }
 gdar() {
 	dfig=$(dialog --title "Altera grupo de um arquivo" \
@@ -1565,7 +1594,7 @@ pgru() {
 	if (( $? == 0 )); then
 		if [ -z $t ]; then
 			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
-			perf	 
+			pgru	 
 		else
 			if [ "$t" == "R W X" ]; then
 				g=7
