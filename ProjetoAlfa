@@ -496,8 +496,7 @@ alts(){
 
 ######################## MENU LISTAR TODOS OS USUARIOS #########################
 list(){
-	tail -f /etc/passwd > out1 &
-	dialog --title "Lista de usuarios" --tailbox out1 0 0
+	dialog --title "Lista de usuarios" --textbox /etc/passwd 0 0
 	gusur
 }
 ##################### FIM DO MENU LISTAR TODOS OS USUARIOS #####################
