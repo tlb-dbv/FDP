@@ -650,8 +650,7 @@ excg() {
 		fi
 }
 lisg() { 
-	cat /etc/group > out1 &
-	dialog --title "Lista de grupos" --tailbox out1 0 0
+	dialog --title "Lista de grupos" --textbox /etc/group 0 0
 	ggrup
 }
 ################### MENU CRIAR ARQUIVO ##############################
@@ -842,7 +841,6 @@ filr() {
 		if [ "$?" == "0" ]; then
 			
 			mv $rena $arqn
-			#rm $rena	
 			dialog --msgbox "Arquivo renomeado com sucesso!" 0 0
 			gfile
 		else
@@ -1426,21 +1424,29 @@ conw() {
 	fi
 }
 
-#conh() {
-#
-#}
-
-
+conh() {
+	host=$(dialog --stdout	\
+		--inputbox "Digite o nome da maquina" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $host ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome da maquina!!!" 0 0 
+				conh
+			else
+				echo "$host" > /etc/hostname
+				grede
+			fi
+		else
+			conh
+		fi
+}
 
 
 ipct() {
 	insp=$(dialog --stdout	\
-		--inputbox "Digite o nome do pacote a ser instalado" 0 50)
+		--inputbox "Digite o nome da maquina" 0 50)
 		if (( $? == 0 )); then
 			if [ -z $insp ]; then
 				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
-				ipct
-			else
 				apt-get install $insp
 				t=$?
 				if (( $t != 0 )); then
