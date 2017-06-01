@@ -1,0 +1,1769 @@
+#!/bin/bash
+
+	#################################################
+	#	     Sistema Super Alfa			#
+	# 	  Desenvolvedor: Grupo Alfa		#
+	#       Integrantes: Alexandre, Matheus,	#
+	#	   Sayyid, Wilson e Tarcisio		#
+	#	       Professor: Thales		#
+	#	        Disciplina: FDP 		#
+	#                 Data: 01/06/2017		#
+	#################################################
+login() {
+usuario=alfa
+senha=senai123
+sai=1
+	user=$(dialog --stdout --backtitle "Sistema Super Alfa" --inputbox "Entre com seu usuario:" 0 0)
+	if (( $? != 0 )); then
+		exit
+	fi
+	
+	pass=$(dialog --stdout --backtitle "Sistema Super Alfa" --insecure --passwordbox "Entre com a sua senha:" 0 0)
+	if (( $? == 0 )); then
+		if  [ "$user" == "$usuario" ]; then
+			sai=0
+			mprin
+		else
+			dialog --msgbox "Usuario ou Senha incorreta !!! " 0 0
+			login
+		fi
+	else
+		exit
+	fi
+}
+
+##############################################################################
+#                    TODAS FUNCOES DE TODOS OS MENU           		     #
+##############################################################################
+
+########################### MENU PRINCIPAL ###################################
+function mprin() {
+clear
+
+mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Gerenciar Usuarios"	        \
+2 "Gerenciar Grupos"		\
+3 "Gerenciar Arquivos"		\
+4 "Gerenciar Rede Local"	\
+5 "Gerenciar Dispositivos"	\
+6 "Gerenciar Repositorio"	\
+7 "Gerenciar Permissoes"	\
+8 "Gerenciar Script"		\
+9 "Sair")
+
+if (( $? != 0 )); then
+	login
+fi
+
+case $mhome in
+
+1) gusur ;;
+2) ggrup ;;
+3) gfile ;;
+4) grede ;;
+5) gdisp ;;
+6) grpto ;;
+7) gperm ;;
+8) gprgm ;;
+9) clear ;
+(
+while :
+do
+cat << EOF
+XXX
+$counter
+Finalizando Processos ( $counter% ):
+XXX
+EOF
+(( counter+=10 ))
+[ $counter == 110 ] && break
+sleep 1
+done
+) |
+dialog --title "Aguarde um momento" --gauge "Please wait" 7 70 0
+clear
+exit
+esac
+}
+
+######################## FIM DO MENU PRINCIPAL ###############################
+
+####################### MENU GERENCIAMENTO DE USUARIO ########################
+gusur(){
+musur=$(dialog --stdout --title "Gerenciamento de Usuarios"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Criar usuarios"		\
+2 "Excluir usuarios"		\
+3 "Alterar nome do usuario"	\
+4 "Alterar senha do usuario"	\
+5 "Listar usuarios"		\
+6 "Voltar")
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $musur in
+
+1) criu ;;
+2) excu ;;
+3) anom ;;
+4) alts ;;
+5) list ;;
+6) volu ;;
+esac
+}
+################### FIM DO MENU GERENCIAMENTO DE USUARIO ######################
+
+###################### MENU GERENCIAMENTO DE GRUPOS ###########################
+ggrup(){
+mgrup=$(dialog --stdout --title "Gerenciamento de Grupos"\
+	    --menu "Escolha uma opcao" 0 0 0 \
+1 "Criar Grupo"			\
+2 "Excluir Grupo"		\
+3 "Adicionar Usuario no Grupo"	\
+4 "Remover Usuario no Grupo"	\
+5 "Listar Grupos"		\
+6 "Voltar")
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $mgrup in
+
+1) crig ;;
+2) egru ;;
+3) adug ;;
+4) exug ;;
+5) lisg ;;
+6) volu ;;
+esac
+}
+################## FIM DO MENU GERENCIAMENTO DE GRUPOS ########################
+
+#################### MENU GERENCIAMENTO DE ARQUIVOS ###########################
+gfile(){
+mfile=$(dialog --stdout --title "Gerenciamento de Arquivos"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Criar Arquivo"		\
+2 "Excluir Arquivo"		\
+3 "Movimentar Arquivo"		\
+4 "Renomear Arquivo"		\
+5 "Criar Diretorio"		\
+6 "Excluir Diretorio"		\
+7 "Compactar Arquivo"		\
+8 "Descompactar Arquivo"	\
+9 "Voltar")
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $mfile in
+
+1) crif ;;
+2) excf ;;
+3) movf ;;
+4) renf;;
+5) crid ;;
+6) deld ;; 
+7) comf ;;
+8) desf ;;
+9) volu ;;
+esac
+
+}
+################## FIM DO MENU GERENIAMENTO DE ARQUIVOS ######################
+
+################## MENU GERENCIAMENTO DE REDES ######################
+grede(){
+mrede=$(dialog --stdout --title "Gerenciamento de Interface de Rede"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Configurar Interface de rede"		\
+2 "Configurar nome da maquina"			\
+3 "Voltar")
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $mrede in
+
+1) coni ;;
+2) conh ;;
+3) volu ;;
+esac
+}
+##################### FIM DO MENU GERENCIAMENTO DE REDES ######################
+
+##################### MENU GERENCIAMENTO DE DISPOSITIVO #######################
+gdisp(){
+mdisp=$(dialog --stdout --title "Gerenciamento de Dispositivo"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Montar Dispositivo"		 \
+2 "Desmontar Dispositivo"		 \
+3 "Dispositivo Instalado"		 \
+4 "Voltar")
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $mdisp in
+
+1) mond ;;
+2) desd ;;
+3) disi ;;
+4) volu ;;
+esac
+}
+################ FIM DO MENU GERENCIAMENTO DE DISPOSITIVO #####################
+
+###################### MENU GERENCIAMENTO DE PACOTES ##########################
+grpto(){
+mrpto=$(dialog --stdout --title "Gerenciamento de Pacotes"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Instalar Pacote"		 \
+2 "Desinstalar Pacote"		 \
+3 "Listar Pacotes"		 \
+4 "Voltar")
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $mrpto in
+
+1) ipct ;;
+2) dpct ;;
+3) lpct ;;
+4) volu ;;
+esac
+}
+##################### FIM MENU GERENCIAMENTO DE PACOTES #######################
+
+################### MENU GERENCIAMENTO DE PERMISIONAMENTO #####################
+gperm(){
+
+mperm=$(dialog --stdout --title "Gerenciamento de Permissionamento"\
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Alterar o dono de um arquivo" \
+2 "Alterar o grupo de um arquivo" \
+3 "Permissao de um arquivo" \
+4 "Voltar" )
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $mperm in
+
+1) parq ;;
+2) pgrp ;;
+3) perf ;;
+4) volu ;;
+esac
+}
+################ FIM DO MENU GERENCIAMENTO DE PERMISSIONAMENTO ################
+
+###################### MENU GERENCIAMENTO DE PROGRAMA #########################
+gprgm(){
+mprgm=$(dialog --stdout --title "Gerenciamento do Script" \
+	    --menu "Escolha uma opcao" 0 0 0 	\
+1 "Criar usuario para o script"	 \
+2 "Alterar Usuario do script"	 \
+3 "Alterar Senha do script"	 \
+4 "Deletar Usuario do script"	 \
+5 "Nivel de acesso"		 \
+6 "Listar Usuarios do script"	 \
+7 "Voltar")
+
+if (( $? != 0 )); then
+	mprin
+fi
+
+case $mprgm in
+
+1) cusp ;;
+2) ausp ;;
+3) asep ;;
+4) dusp ;;
+5) nacp ;;
+6) lusp ;;
+7) volu ;;
+esac
+}
+#################### FIM DO MENU GERENCIAMENTO DE PROGRAMA #####################
+
+
+########################## MENU CRIACAO DE USUARIOS ############################
+criu(){
+	clear
+
+	user=$(dialog --stdout	\
+	--inputbox "Digite o nome do usuario a ser criado:" 0 50)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $user ]; then
+			dialog --aspect 45 --backtitle "Atencao" --msgbox "O campo nome de usuario e obrigatorio!!!" 0 0 
+			criu
+		else
+			useradd $user 
+			t=$?
+			if (( $t == 9 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $user ja existe!!!" 0 0 
+				criu
+			else
+				deluser $user
+				cris
+			fi
+			
+		fi
+	else
+		gusur
+	fi
+}
+################# Solicitacao da senha ###############################
+
+cris(){
+	senha=$(dialog --stdout --insecure 		\
+		--passwordbox "Digite a senha:" 0 0 )
+		t=$?
+	if (( $t == 0 )); then
+		if [ -z $senha ]; then
+			dialog --aspect 45 --backtitle "Atencao" --msgbox "O campo senha e obrigatorio! Tente novamente!" 0 0
+			cris
+		else
+			reps
+		fi
+	else
+		gusur
+	fi
+}
+
+reps(){
+	senha1=$(dialog --stdout --insecure 		\
+		--passwordbox "Confirme a senha:" 0 0 )
+		t=$?
+	if (( $t == 0 )); then
+		if [ -z $senha ]; then
+			dialog --aspect 45 --backtitle "Atencao" --msgbox "E obrigatorio repetir a senha! Tente novamente!" 0 0
+			reps
+		else
+			cons
+		fi
+	else
+		gusur
+	fi
+}
+cons() {
+	if [ "$senha" != "$senha1" ]; then
+		dialog --yes-label Sim --no-label Nao --yesno "As senhas nao sao iguais!!! \
+		Deseja tentar novamente?" 7 40
+		t=$?
+		if (( $t == 0 )); then
+			cris
+		else
+			gusur
+		fi
+	else
+		conc
+	fi
+}
+conc() {
+	dialog --title "Confirmação" \
+	       --backtitle "Atenção" \
+	       --yes-label Sim --no-label Nao --yesno "Voce tem certeza que deseja criar o usuario "$user" ?" 7 60
+	t=$?
+	if [ "$t" == "0" ]; then
+		useradd -m -d /home/$user -r -s /bin/bash $user
+		(echo $senha; echo $senha) | passwd $user
+		dialog --msgbox --aspect 45 "Usuario $user criado com sucesso!" 0 0
+		tail -f /etc/passwd > out &
+		dialog --title "Lista de usuarios" --textbox out 30 30
+		gusur
+	else
+		dialog --msgbox --aspect 45 "Procedimento cancelado!" 0 0
+		gusur
+	fi
+}
+######################### FIM DO MENU CRIACAO DE USUARIO ######################
+
+######################## MENU PARA EXCLUIR USUARIOS ###########################
+excu(){
+	clear
+	tail -f /etc/passwd > out1 &
+	dialog --title "Lista de usuarios" --tailbox out1 0 0
+	user=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser deletado:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $user ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				excu
+			else
+				dialog --title "Confirmacao"		\
+				--backtitle "Atencao"		\
+				--yesno "Voce tem ceteza que deseja deletar o usuario "$user" ?" 7 50
+			t=$?
+			fi
+			if (( $t == 0 )); then
+				deluser $user
+				t=$?
+				if (( $t != 0 )); then
+					dialog --aspect 50 --msgbox "Usuario "$user" nao existe!" 0 0
+					gusur
+				else
+					dialog --aspect 50 --msgbox "Usuario "$user" deletado com sucesso!" 0 0
+					gusur
+				fi
+			else
+				dialog --aspect 45 --msgbox "Procedimento Cancelado!" 0 0
+				gusur
+			fi
+		else
+			gusur
+		fi
+
+}
+###################### FIM DO MENU PARA EXCLUIR USUARIOS ######################
+
+######################## MENU ALTERAR NOME DE USUARIOS ########################
+anom(){
+	tail -f /etc/passwd > out1 &
+	dialog --title "Lista de usuarios" --tailbox out1 0 0
+	altn=$(dialog --stdout	\
+	      --inputbox "Digite o nome do usuario a ser modificado:" 0 60)
+		if (( $? == 0 )); then
+			if [ -z $altn ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				anom
+			else
+				musu
+			fi
+		else
+			gusur
+		fi
+}
+musu(){
+	mvuser=$(dialog --stdout	\
+       		--inputbox "Digite o novo nome do usuario:" 0 50)
+	if (( $? == 0 )); then
+		if [ -z $mvuser ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0
+			musu
+		else 
+			dialog --title " Confirmacao"	\
+				--backtitle "Atencao"	\
+				--yesno "Voce tem certeza que deseja renomear o usuario "$altn" ?" 7 60
+			if (( $? == 0 )); then
+				rena
+			else
+				gusur
+			fi
+		fi
+	else
+		gusur
+	fi
+}
+##################### Comando para renomear usuário ################
+rena() {
+	usermod -l $mvuser $altn
+	t=$?
+	if (( $t != 0 )); then
+		dialog --aspect 50 --msgbox "Usuario "$altn" nao existe!" 0 0
+			gusur
+ 
+	else
+		dialog --aspect 50 --msgbox "Usuario "$altn" renomeado para $mvuser" 0 0
+		gusur
+	fi
+#	else
+#		dialog --msgbox "Procedimento Cancelado!" 0 0
+#		gusur
+#	fi
+
+}
+
+##################### FIM DO MENU ALTERAR NOME DE USUARIOS ####################
+
+####################### MENU ALTERAR SENHA DE USUARIOS ########################
+alts(){
+	dialog --stdout --msgbox "4" 0 0
+}
+################### FIM DO MENU ALTERAR SENHA DE USUARIOS #####################
+
+######################## MENU LISTAR TODOS OS USUARIOS #########################
+list(){
+	tail -f /etc/passwd > out1 &
+	dialog --title "Lista de usuarios" --tailbox out1 0 0
+	gusur
+}
+##################### FIM DO MENU LISTAR TODOS OS USUARIOS #####################
+
+################################# MENU VOLTAR ##################################
+volu(){
+	mprin
+}
+############################## FIM DO MENU VOLTAR ##############################
+
+crig() {
+	mcrig=$(dialog --stdout	\
+       		--inputbox "Digite o nome do grupo a ser criado:" 0 50)
+	if (( $? == 0 )); then
+		if [ -z $mcrig ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0
+			crig
+		else
+			groupadd $mcrig
+			ggrup
+		fi
+	else
+		ggrup
+	fi
+}
+
+egru() {
+	tail -f /etc/group > out1 &
+	dialog --title "Lista de grupos" --tailbox out1 0 0
+	grup=$(dialog --stdout	\
+		--inputbox "Digite o nome do grupo a ser deletado:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $grup ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				egru
+			else
+				dialog --title "Confirmacao"		\
+				--backtitle "Atencao"		\
+				--yesno "Voce tem ceteza que deseja deletar o grupo $grup ?" 7 50
+
+			fi
+			if [ "$?" == "0" ]; then
+				delgroup $grup
+				t=$?
+				if (( $t != 0 )); then
+					dialog --aspect 50 --msgbox "Grupo $grup nao existe!" 0 0
+					ggrup
+				else
+					dialog --aspect 50 --msgbox "Grupo $grup deletado com sucesso!" 0 0
+					ggrup
+				fi
+			else
+				dialog --aspect 45 --msgbox "Procedimento Cancelado!" 0 0
+				ggrup
+			fi
+		else
+			ggrup
+		fi
+}
+
+adug() {
+	addu=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser adiconado em um grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $addu ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				adug
+			else
+				gpasswd -a $addu root
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $addu nao existe!!!" 0 0 
+					adug
+				else
+					gpasswd -d $addu root
+					addg
+				fi
+			fi
+		else
+			ggrup
+		fi
+}
+
+addg() {
+	adgr=$(dialog --stdout	\
+		--inputbox "Digite o nome do Grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $adgr ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+				addg
+			else
+				gpasswd -a $addu $adgr
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo $adgr nao existe!!!" 0 0
+					addg
+				else
+					 
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $addu adicionado no grupo $adgr!!!" 0 0 
+					ggrup
+				fi			
+			fi
+		else
+			ggrup
+		fi
+}
+exug() { 
+	excu=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser removido de um grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $excu ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				exug
+			else
+				gpasswd -a $excu root
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $excu nao existe!!!" 0 0 
+					exug
+				else
+					#gpasswd -d $excu root
+					excg
+				fi
+			fi
+		else
+			ggrup
+		fi
+}
+
+excg() {
+	exgr=$(dialog --stdout	\
+		--inputbox "Digite o nome do Grupo:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $exgr ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+				excg
+			else
+				gpasswd -d $excu $exgr
+				t=$?
+				if (( $t == 3 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo $exgr nao existe!!!" 0 0
+					excg
+				else
+					 
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario $excu removido do grupo $exgr!!!" 0 0 
+					ggrup
+				fi			
+			fi
+		else
+			ggrup
+		fi
+}
+lisg() { 
+	cat /etc/group > out1 &
+	dialog --title "Lista de grupos" --tailbox out1 0 0
+	ggrup
+}
+################### MENU CRIAR ARQUIVO ##############################
+crif() {
+	clear
+	arq=$(dialog --stdout \
+		--inputbox "Digite o nome do arquivo a ser criado:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $arq ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite um nome para o arquivo!!!" 0 0
+			crif
+		else
+			cami
+		fi
+	else
+		gfile
+	fi
+}
+cami() {
+	caminho=$(dialog --title "Criar arquivo" \
+	--stdout --title "Selecione o local onde sera salvo o arquivo" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $caminho ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um local!" 0 0
+			cami
+		else
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
+			--yesno "Voce tem certeza que deseja criar o arquivo? $arq no $caminho" 0 0 
+			if [ "$?" == "0" ]; then
+				> $caminho$arq
+				t=$?
+				if (( $t == 0 )); then
+					dialog --msgbox "Arquivo criado com sucesso!" 0 0
+					ls -la $caminho$arq > out4 &
+					dialog --title "Lista de arquivos" --tailbox out4 0 0
+					gfile
+				else
+					dialog --msgbox "Local nao existe!" 0 0
+					cami
+				fi
+			else
+				dialog --msgbox "Procedimento Cancelado!" 0 0
+				gfile
+			fi
+		fi
+	else
+		gfile
+	fi
+}
+
+################################ Função Deletar Arquivos ####################################
+	
+excf (){
+	clear
+		delf=$(dialog --title "Deletar arquivo" \
+		--stdout --title "Selecione o arquivo a ser deletado" \
+		--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $delf ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo a ser deletado!" 0 0
+			excf
+		else
+			ls $delf
+			if (( $? == 0 )); then	
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Voce tem certeza que deseja deletar o arquivo?" 7 50
+				if [ "$?" == "0" ]; then
+					rm $delf
+					dialog --msgbox "Arquivo deletado com sucesso!" 0 0
+					ls -la $delf > out5 &
+					dialog --title "Lista de arquivos" --tailbox out5 0 0
+					gfile	
+				else
+					dialog --msgbox "Procedimento Cancelado!" 0 0
+					gfile
+				fi
+			else
+				dialog --msgbox "Arquivo nao existe!" 0 0
+				gfile
+			fi
+				
+		fi
+	else
+		gfile
+	fi
+}
+########################### Função Mover Arquivos ####################################
+movf (){
+	clear
+	mova=$(dialog --title "Mover arquivo" \
+	--stdout --title "Selecione o arquivo a ser movido" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $mova ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha o arquivo!" 0 0
+			movf
+		else
+			ls $mova
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				movf
+			else
+				locf
+			fi
+		fi
+	else
+		gfile
+	fi
+}
+locf (){
+	loca=$(dialog --title "Local da movimentacao do arquivo" \
+	--stdout --title "Selecione o local que o arquivo sera movido" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $loca ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um local!" 0 0
+			locf
+		else
+			ls $loca	
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Local nao existe!" 0 0
+				locf
+			else
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Voce tem certeza que deseja mover o arquivo $mova para o local $loca ?" 7 50
+				if [ "$?" == "0" ]; then
+					mv $mova $loca	
+					dialog --msgbox "Arquivo renomeado com sucesso!" 0 0
+					ls -la $loca > out6 &
+					dialog --title "Lista de arquivos" --tailbox out6 0 0
+					gfile
+				else
+					dialog --msgbox "Procedimento Cancelado!" 0 0
+					gfile
+				fi
+			fi
+		fi
+	else
+		gfile
+	fi
+}
+################################ Função Renomear Arquivos ####################################
+renf() {
+	rena=$(dialog --title "Renomear arquivo" \
+	--stdout --title "Selecione o arquivo que sera renomeado" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $rena ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			renf
+		else
+			ls $rena
+			if (( $? == 2 ));then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				renf
+			else
+				filr
+			fi
+		fi
+	else
+		gfile
+	fi
+}
+
+filr() {
+	arqn=$(dialog --stdout \
+		--inputbox "Digite o novo nome do arquivo:" 0 0)
+		t=$?
+	if (( $t == 0 )); then
+		if [ -z $arqn ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um novo nome para o arquivo!" 0 0
+			filr
+		else
+			dialog --title "Confirmacao" \
+			--backtitle "Atencao" \
+			--yesno "Voce tem certeza que deseja renomear o arquivo $rena para o local $arqn ?" 7 50
+		fi
+		if [ "$?" == "0" ]; then
+			
+			mv $rena $arqn
+			#rm $rena	
+			dialog --msgbox "Arquivo renomeado com sucesso!" 0 0
+			gfile
+		else
+			dialog --msgbox "Procedimento Cancelado!" 0 0
+			gfile
+		fi
+	else
+		gfile
+	fi
+}
+
+
+crid() {
+	dirc=$(dialog --stdout	\
+		--inputbox "Digite o nome do diretorio a ser criado:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $dirc ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+				crid
+			else
+				locd
+			fi
+		else
+			gfile
+		fi
+}
+locd() {
+	dirl=$(dialog --title " Local diretorio" \
+	--stdout --title "Selecione o destino para criar o diretorio" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then			
+		if [ -z $dirl ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Destino obrigatorio!!!" 0 0 
+			locd
+		else
+			mkdir $dirl/$dirc
+			o=$?
+			if (( $o == 1 )); then			
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Local do destino nao existe!!!" 0 0
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Gostaria de selecionar o destino novamente?" 7 50
+				if (( $? == 0 )); then
+					locd
+				else
+					gfile
+				fi
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio criado com sucesso!!!" 0 0
+				gfile
+			fi
+		fi
+	else
+		gfile
+	fi 		
+}
+
+deld() {
+	dird=$(dialog --title " Local diretorio" \
+	--stdout --title "Selecione o destino para excluir o diretorio" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then			
+		if [ -z $dird ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio obrigatorio!!!" 0 0 
+			deld
+		else
+			ls $dird
+			if (( $? == 2 ));then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio nao existe!" 0 0
+				deld
+			else
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Apagar $dird?" 7 50
+				if (( $? == 0 )); then
+					if [ "$dird" == "/" ]; then
+						dialog --title "Confirmacao" \
+						--backtitle "Atencao" \
+						--yesno "Voce vai fazer cagada! deseja mesmo continuar??" 7 150
+						u=$?
+						if (( $u == 0 )); then
+							dialog --aspect 40 --backtitle "Atencao" --msgbox "Impossivel apagar esse diretorio!!!" 0 0 
+							gfile
+						else
+							gfile
+						fi
+					else
+						rm -rf $dird
+						gfile
+					fi
+				else
+					gfile
+				fi
+			fi
+		fi			
+	else
+		gfile
+	fi
+}
+
+####################### Compactar Arquivo #############################	
+comf() {
+	compa=$(dialog --title "Compactar arquivo" \
+	--stdout --title "Selecione o arquivo que sera compactado" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $compa ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			comf
+		else
+			ls $compa
+			if (( $? == 0 )); then	
+				coma
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				comf
+			fi
+		fi
+	else
+		gfile
+	fi	
+}
+coma() {
+	narq=$(dialog --stdout \
+	--inputbox "Digite o novo nome do arquivo:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $narq ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um nome para o arquivo compactado!" 0 0
+			coma
+		else
+			arql
+		fi
+	else
+		gfile
+	fi
+}
+arql() {
+	loar=$(dialog --title "Compactar arquivo" \
+	--stdout --title "Selecione o local que sera armazenado o arquivo compactado" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $loar ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			arql
+		else
+			tar -cvf $loar/$narq.tar $compa
+			t=$?
+			if (( $t == 2 ));then
+				dialog --title "Confirmacao" \
+				--backtitle "Atencao" \
+				--yesno "Gostaria de criar o diretorio ?" 7 50
+				if (( $? == 0 )); then
+					mkdir $loar
+					tar -cvf $loar/$narq.tar $compa
+					gfile
+				else
+					gfile
+				fi
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo compactado com sucesso"
+				gfile
+			fi
+		fi
+		gfile
+	fi
+}
+
+desf() {
+desc=$(dialog --title "Descompactar arquivo" \
+	      --stdout --title "Selecione o arquivo a ser descompactado" \
+	      --fselect /home/ 0 0)
+	      t=$?
+	      if (( $t == 0 )); then
+			if [ -z $desc ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo a ser descompactado!" 0 0
+				desf
+			else
+				ls $desc
+				if (( $? == 0 )); then	
+					desl
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+					desf
+				fi
+			fi
+		else
+			gfile
+		fi
+}
+desl() {
+locd=$(dialog --title "Descompactar arquivo" \
+	--stdout --title "Selecione o destino da descompactacao do arquivo" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $locd ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "E necessario escolher um local!" 0 0
+			desl
+		else
+			ls $locd
+			if (( $? == 2 )); then	
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Arquivo nao existe!" 0 0
+				desl
+			else
+				tar -xvf $desc -C $locd
+				gfile
+			fi
+		fi
+	else
+		gfile
+	fi
+}
+coni() {
+	dialog --title "Confirgurar Loopback" \
+	--backtitle "Atencao" \
+	--yesno "Voce gostaria de configurar o loopback ?" 7 150
+	z=$?
+	if (( $z == 0 )); then
+		loop
+	else
+		lop=1
+		coip
+	fi
+
+}
+loop() {
+	lip=$(dialog --stdout \
+	--inputbox "Digite o IP:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $lip ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite um IP!" 0 0
+			loop
+		else
+			loma
+		fi
+	else
+		grede
+	fi
+}
+loma() {
+	lmask=$(dialog --stdout \
+	--inputbox "Digite a mascara da rede:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $lmask ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita mascara de rede!" 0 0
+			loma
+		else
+			lop=0
+			dialog --title "Confirgurar Interfaces" \
+			--backtitle "Atencao" \
+			--yesno "Voce gostaria de configurar a interface fisica de rede?" 7 150
+			u=$?
+			if (( $u != 0 )); then
+				k=1
+				dialog --title "Confirgurar Interfaces" \
+				--backtitle "Atencao" \
+				--yesno "Voce gostaria de configurar a interface wirelles?" 7 150
+				c=$?
+				if (( $c != 0 )); then
+					echo "source /etc/network/interfaces.d/*
+					auto lo
+					iface lo inet static
+					address $lip
+					netmask $lmask 
+					auto eth0
+					iface eth0 inet dhcp 
+					auto wlan0
+					iface wlan0 inet dhcp" > /etc/network/interfaces
+					/etc/init.d/networking restart
+					grede
+				else
+					cowi
+				fi
+			else
+				k=0
+				coip
+			fi
+		fi
+	else
+		grede
+	fi
+}
+coip() {
+	dialog --title "Confirgurar Interface" \
+	--backtitle "Atencao" \
+	--yesno "Gostaria de configurar a interface eth0 ?" 7 150
+	k=$?
+	if (( $k != 0 )); then
+		k=1
+		cowi
+	else
+		k=0
+		cip
+	fi
+}
+cip() {
+		dialog --title "Confirgurar Interface" \
+		--backtitle "Atencao" \
+		--yesno "Deixar a interface eth0 em dhcp?" 7 150
+		u=$?
+		if (( $u != 0 )); then
+			ip=$(dialog --stdout \
+			--inputbox "Digite o IP:" 0 0)
+			t=$?
+			if (( $t == 0 )); then
+				if [ -z $ip ]; then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite um IP!" 0 0
+					cip
+				else
+					conm
+				fi
+			else
+				grede
+			fi
+		else
+			codh=1
+			cint
+		fi
+}
+conm() {
+	mask=$(dialog --stdout \
+	--inputbox "Digite a mascara da rede:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $mask ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita mascara de rede!" 0 0
+			conm
+		else
+			cong
+		fi
+	else
+		grede
+	fi
+}
+cong() {
+	gate=$(dialog --stdout \
+	--inputbox "Digite o GATEWAY:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $gate ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite Gateway!" 0 0
+			cong
+		else
+			cond
+		fi
+	else
+		grede
+	fi
+}
+cond() {
+	dns=$(dialog --stdout \
+	--inputbox "Digite o DNS:" 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $dns ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o DNS!" 0 0
+			cond
+		else
+			codh=0
+			cint
+		fi
+	else
+		grede
+	fi
+}
+cint() {
+	if (( $lop == 0 && $codh == 0 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet static
+		address $lip
+		netmask $lmask 
+	
+		auto eth0
+		iface eth0 inet static
+		address $ip
+		netmask $mask
+		gateway $gate" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	elif (( $lop == 0 && $codh == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet static
+		address $lip
+		netmask $lmask 
+	
+		auto eth0
+		iface eth0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	elif (( $lop == 1 && $codh == 0 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet loopback
+	
+		auto eth0
+		iface eth0 inet static
+		address $ip
+		netmask $mask
+		gateway $gate" > /etc/network/interfaces
+		echo "nameserver $dns" > /etc/resolv.conf 
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	elif (( $lop == 1 && $codh == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto lo
+		iface lo inet loopback
+		
+		auto eth0 
+		iface eth0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		dialog --title "Confirgurar Interfaces" \
+		--backtitle "Atencao" \
+		--yesno "Voce gostaria de configurar a interface de wirelles?" 7 150
+		u=$?
+		if (( $u == 0 )); then
+			cowi
+		else
+			grede
+		fi
+	fi		
+			
+}
+cowi() {
+	dialog --title "Confirgurar Interface" \
+	--backtitle "Atencao" \
+	--yesno "Configurar a interface wirelles no modo dhcp?" 7 150
+	u=$?
+	if (( $u != 0 )); then
+		wip=$(dialog --stdout \
+		--inputbox "Digite o IP:" 0 0)
+		i=$?
+		if (( $i == 0 )); then
+			if [ -z $wip ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita o IP!" 0 0
+				cowi
+			else
+				w=1
+				cmask
+			fi
+		else
+			grede
+		fi
+	else
+		w=0
+		conw
+	fi
+}
+cmask() { 
+	wmask=$(dialog --stdout \
+	--inputbox "Digite o Mascara de rede:" 0 0)
+	i=$?
+	if (( $i == 0 )); then
+		if [ -z $wip ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita o IP!" 0 0
+			cmask
+		else
+			cgate
+		fi
+	else
+		grede
+	fi
+}
+cgate() {
+	wgate=$(dialog --stdout \
+	--inputbox "Digite o Gateway:" 0 0)
+	i=$?
+	if (( $i == 0 )); then
+		if [ -z $wip ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Digita o IP!" 0 0
+			cgate
+		else
+			conw
+		fi
+	else
+		grede
+	fi
+}
+conw() {
+	if (( $w == 0 && $z == 1 && $k == 1 )); then 
+		echo "source /etc/network/interfaces.d/*
+		auto wlan0
+		iface wlan0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restar
+		grede
+	elif (( $w == 1 && $z == 1 && $k == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 0 && $z == 0 && $k == 1 )); then 
+		echo "source /etc/network/interfaces.d/*
+		iface lo inet static
+		address $lip
+		netmask $lmask 
+		auto eth0
+		iface eth0 inet dhcp 
+		auto wlan0
+		iface wlan0 inet dhcp" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 1 && $z == 0 && $k == 1 )); then
+		echo "source /etc/network/interfaces.d/*
+		iface lo inet static
+		address $lip
+		netmask $lmask
+		auto eth0
+		iface eth0 inet dhcp 
+		echo auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" > /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 0 && $z == 1 && $k == 0 )); then 
+		echo "
+		auto wlan0
+		iface wlan0 inet dhcp" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 1 && $z == 1 && $k == 0 )); then
+		echo "auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 0 && $z == 0 && $k == 0 )); then 
+		echo "
+		auto wlan0
+		iface wlan0 inet dhcp" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	elif (( $w == 1 && $z == 0 && $k == 0 )); then
+		echo "
+		auto wlan0 
+		iface wlan0 inet static
+		address $wip
+		netmask $wmask
+		gateway $wgate" >> /etc/network/interfaces
+		/etc/init.d/networking restart
+		grede
+	fi
+}
+
+#conh() {
+#
+#}
+
+
+
+
+ipct() {
+	insp=$(dialog --stdout	\
+		--inputbox "Digite o nome do pacote a ser instalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $insp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
+				ipct
+			else
+				apt-get install $insp
+				t=$?
+				if (( $t != 0 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote instalado com sucesso !!!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
+
+dpct() {
+	delp=$(dialog --stdout	\
+		--inputbox "Digite o nome do digite o nome do pacote que sera desinstalado" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $delp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Digite o nome do Pacote!!!" 0 0 
+				dpct
+			else
+				apt-get remove $delp
+				if (( $? != 0 )); then
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Algo deu errado!!!" 0 0 
+					grpto
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Pacote desinstalado com sucesso!!!" 0 0 
+					grpto
+				fi
+			fi
+		else
+			grpto
+		fi
+}
+
+
+lpct() {
+	ls /usr/bin/ > out1 &
+	dialog --title "Pacotes Instaldos" --tailbox out1 0 0
+}
+
+parq() {
+	dono=$(dialog --stdout	\
+		--inputbox "Digite o nome do usuario a ser adicionado como dono do arquivo ou diretorio:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $dono ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario obrigatorio!!!" 0 0 
+				parq
+			else
+				usermod -l $dono $dono
+				t=$?
+				if (( $t == 0 )); then
+					darq
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Usuario nao existe!!!" 0 0 
+					parq
+				fi	
+			fi
+		else
+			gperm
+		fi
+}
+darq() {
+	dirp=$(dialog --title "Selecione Arquivo" \
+	--stdout --title "Selecione o arquivo ou diretorio que sofrera alteracao de dono" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $dirp ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			darq
+		else
+			ls $dirp
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio ou arquivo nao existe!" 0 0
+				darq
+			else
+				chown $dono $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracao feita com sucesso!" 0 0
+				gperm
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+pgrp() {
+	grup=$(dialog --stdout	\
+		--inputbox "Digite o nome do grupo a ser modificado como grupo do arquivo ou diretorio:" 0 50)
+		if (( $? == 0 )); then
+			if [ -z $grup ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo obrigatorio!!!" 0 0 
+				pgrp
+			else
+				delgroup $grup
+				if (( $? == 0 )); then
+					groupadd $grup
+					gdar
+				else
+					dialog --aspect 40 --backtitle "Atencao" --msgbox "Grupo nao existe!!!" 0 0 
+					pgrp
+				fi
+			fi
+		else
+			gperm
+		fi
+}
+gdar() {
+	dfig=$(dialog --title "Altera grupo de um arquivo" \
+	--stdout --title "Selecione o arquivo ou diretorio que sofrera alteracao do grupo" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $dfig ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			gdar
+		else
+			ls $dfig
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio ou arquivo nao existe!" 0 0
+				gdar
+			else
+				chgrp $grup $dfig
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracao feita com sucesso!" 0 0
+				gperm
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+
+perf() {
+	dirp=$(dialog --title "Selecione Arquivo" \
+	--stdout --title "Selecione o arquivo ou diretorio que sofrera alteracao de permissionamento" \
+	--fselect /home/ 0 0)
+	t=$?
+	if (( $t == 0 )); then
+		if [ -z $dirp ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo!" 0 0
+			perf
+		else
+			ls $dirp
+			if (( $? == 2 )); then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Diretorio ou arquivo nao existe!" 0 0
+				perf
+			else
+				pdon
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+pdon() {
+	t=$(dialog 					\
+	--stdout					\
+	--title 'Permissionamento Dono'			\
+	--checklist 'O que o dono vai poder fazer ?' 	\
+	0 0 0						\
+	R	'Leitura/Visualizar' 	   off		\
+	W	'Gravacao/Escrever/Apagar' off		\
+	X	'Execucao/Acessar'	   off		\
+	0	'Nada'			   off)	
+	
+	if (( $? == 0 )); then
+		if [ -z $t ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			pdon 
+		else
+			if [ "$t" == "R W X" ]; then
+				d=7
+				pgru
+			elif [ "$t" == "R W " ]; then
+				d=6	
+				pgru
+			elif [ "$t" == "R X" ]; then
+				d=5	
+				pgru
+			elif [ "$t" == "R" ]; then
+				d=4	
+				pgru
+			elif [ "$t" == "W X" ]; then
+				d=3	
+				pgru
+			elif [ "$t" == "W" ]; then
+				d=2	
+				pgru
+			elif [ "$t" == "X" ]; then
+				d=1	
+				pgru
+			elif [ "$t" == "0" ]; then
+				d=0	
+				pgru
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
+				pdon		
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+
+pgru() {
+	t=$(dialog 					\
+	--stdout					\
+	--title 'Permissionamento Grupo'			\
+	--checklist 'O que o Grupo vai poder fazer ?' 	\
+	0 0 0						\
+	R	'Leitura/Visualizar' 	   off		\
+	W	'Gravacao/Escrever/Apagar' off		\
+	X	'Execucao/Acessar'	   off		\
+	0	'Nada'			   off)	
+	
+	if (( $? == 0 )); then
+		if [ -z $t ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			pgru	 
+		else
+			if [ "$t" == "R W X" ]; then
+				g=7
+				pout
+			elif [ "$t" == "R W " ]; then
+				g=6	
+				pout
+			elif [ "$t" == "R X" ]; then
+				g=5	
+				pout
+			elif [ "$t" == "R" ]; then
+				g=4	
+				pout
+			elif [ "$t" == "W X" ]; then
+				g=3	
+				pout
+			elif [ "$t" == "W" ]; then
+				g=2	
+				pout
+			elif [ "$t" == "X" ]; then
+				g=1	
+				pout
+			elif [ "$t" == "0" ]; then
+				g=0	
+				pout
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
+				pgru		
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+
+pout() {
+	t=$(dialog 					\
+	--stdout					\
+	--title 'Permissionamento Demai'			\
+	--checklist 'O que os demais usuarios vao poder fazer ?' 	\
+	0 0 0						\
+	R	'Leitura/Visualizar' 	   off		\
+	W	'Gravacao/Escrever/Apagar' off		\
+	X	'Execucao/Acessar'	   off		\
+	0	'Nada'			   off)	
+	
+	if (( $? == 0 )); then
+		if [ -z $t ]; then
+			dialog --aspect 40 --backtitle "Atencao" --msgbox "Escolha um arquivo, ou diretorio!" 0 0
+			perf	 
+		else
+			if [ "$t" == "R W X" ]; then
+				o=7
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
+				gperm
+			elif [ "$t" == "R W " ]; then
+				o=6	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
+			elif [ "$t" == "R X" ]; then
+				o=5	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
+			elif [ "$t" == "R" ]; then
+				o=4	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
+			elif [ "$t" == "W X" ]; then
+				o=3	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
+			elif [ "$t" == "W" ]; then
+				o=2	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
+			elif [ "$t" == "X" ]; then
+				o=1	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
+			elif [ "$t" == "0" ]; then
+				o=0	
+				chmod $d$g$o $dirp
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Alteracoes feita com sucesso!" 0 0
+				gperm
+			else
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Opcoes selecionadas incorretamente!" 0 0
+				pout		
+			fi
+		fi
+	else
+		gperm
+	fi
+}
+login
+
+
+
