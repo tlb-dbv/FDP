@@ -431,8 +431,7 @@ excu(){
 
 ######################## MENU ALTERAR NOME DE USUARIOS ########################
 anom(){
-	tail -f /etc/passwd > out1 &
-	dialog --title "Lista de usuarios" --tailbox out1 0 0
+	dialog --title "Lista de usuarios" --textbox /etc/passwd 0 0
 	altn=$(dialog --stdout	\
 	      --inputbox "Digite o nome do usuario a ser modificado:" 0 60)
 		if (( $? == 0 )); then
@@ -479,11 +478,6 @@ rena() {
 		dialog --aspect 50 --msgbox "Usuario "$altn" renomeado para $mvuser" 0 0
 		gusur
 	fi
-#	else
-#		dialog --msgbox "Procedimento Cancelado!" 0 0
-#		gusur
-#	fi
-
 }
 
 ##################### FIM DO MENU ALTERAR NOME DE USUARIOS ####################
@@ -1440,6 +1434,66 @@ conh() {
 		fi
 }
 
+mond() {
+	dmesg |grep removable > part.txt
+	dialog --title "Seu dispositivo esta conectado em:" --textbox /home/vagrant/FDP/part.txt 0 0
+	mont=$(dialog --stdout	\
+	      --inputbox "Para descobrir as particoes do seu dispositivo digite as 3 letras do mesmo:" 0 60)
+		if (( $? == 0 )); then
+			if [ -z $mont ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao obrigatorio!!!" 0 0 
+				mond
+			else
+				dmesg |grep $mont > part.txt
+				dialog --title "Seu dispositivo tem a seguinte particao:" --textbox /home/vagrant/FDP/part.txt 0 0
+				disp=$(dialog --stdout	\
+	      			--inputbox "Digite as 3 letras do dispositivo e o numero da particionamento:" 0 60)
+				if (( $? == 0 )); then
+					if [ -z $disp ]; then
+						dialog --aspect 40 --backtitle "Atencao" --msgbox "Letras obrigatoria!!!" 0 0 
+						mond
+					else
+						mount -t vfat /dev/$disp /media/pendrive/
+						if (( $? == 0 )); then
+							dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao criada com sucesso!!!" 0 0
+							gdisp
+						else
+							dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao nao criada!!!" 0 0
+							gdisp				
+						fi
+					fi
+				else
+					gdisp
+				fi
+			fi
+		else
+			gdisp
+		fi
+}
+
+desd() {
+	df -h > desm.txt
+	dialog --title "Seu dispositivo esta conectado em:" --textbox /home/vagrant/FDP/desm.txt 0 0
+	desp=$(dialog --stdout	\
+	      --inputbox "Digite a particicao do dispositvo a ser desmontado:" 0 60)
+		if (( $? == 0 )); then
+			if [ -z $desp ]; then
+				dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao obrigatorio!!!" 0 0 
+				desde
+			else
+				umount /dev/$desp
+				gdisp
+			fi
+		else
+			gdisp
+		fi
+}
+
+disi() {
+	df -h > desm.txt
+	dialog --title "Dispositivos conectados:" --textbox /home/vagrant/FDP/desm.txt 0 0
+	gdisp
+}
 
 ipct() {
 	insp=$(dialog --stdout	\
