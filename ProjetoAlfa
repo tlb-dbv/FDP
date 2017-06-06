@@ -21,8 +21,13 @@ sai=1
 	pass=$(dialog --stdout --backtitle "Sistema Super Alfa" --insecure --passwordbox "Entre com a sua senha:" 0 0)
 	if (( $? == 0 )); then
 		if  [ "$user" == "$usuario" ]; then
-			sai=0
-			mprin
+			if [ "$senha" == "$pass" ]; then
+				sai=0
+				mprin
+			else
+				dialog --msgbox "Usuario ou Senha incorreta !!! " 0 0
+				login
+			fi
 		else
 			dialog --msgbox "Usuario ou Senha incorreta !!! " 0 0
 			login
@@ -49,7 +54,7 @@ mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
 5 "Gerenciar Dispositivos"	\
 6 "Gerenciar Repositorio"	\
 7 "Gerenciar Permissoes"	\
-8 "Gerenciar Script"		\
+8 "Gerenciar Usuarios do Programa"		\
 9 "Sair")
 
 if (( $? != 0 )); then
@@ -1453,13 +1458,25 @@ mond() {
 						dialog --aspect 40 --backtitle "Atencao" --msgbox "Letras obrigatoria!!!" 0 0 
 						mond
 					else
-						mount -t vfat /dev/$disp /media/pendrive/
+						name=$(dialog --stdout	\
+	      					--inputbox "Digite o nome para seu dispositvo:" 0 60)
 						if (( $? == 0 )); then
-							dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao criada com sucesso!!!" 0 0
-							gdisp
+							if [ -z $name ]; then
+								dialog --aspect 40 --backtitle "Atencao" --msgbox "Nome obrigatorio!!!" 0 0 
+								mond
+							else
+								mkdir /media/$name
+								mount -t vfat /dev/$disp /media/$name/
+								if (( $? == 0 )); then
+									dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao criada com sucesso!!!" 0 0
+									gdisp
+								else
+									dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao nao criada!!!" 0 0
+									gdisp
+								fi
+							fi
 						else
-							dialog --aspect 40 --backtitle "Atencao" --msgbox "Particao nao criada!!!" 0 0
-							gdisp				
+							gdisp
 						fi
 					fi
 				else
@@ -1821,6 +1838,30 @@ pout() {
 	else
 		gperm
 	fi
+}
+cusp() {
+	dialog --aspect 40 --backtitle "Atencao" --msgbox "Em Construcao!" 0 0
+	mprin		
+}
+ausp(){
+	dialog --aspect 40 --backtitle "Atencao" --msgbox "Em Construcao!" 0 0
+	mprin		
+} 
+asep(){
+	dialog --aspect 40 --backtitle "Atencao" --msgbox "Em Construcao!" 0 0
+	mprin		
+} 
+dusp(){
+	dialog --aspect 40 --backtitle "Atencao" --msgbox "Em Construcao!" 0 0
+	mprin		
+}
+nacp(){
+	dialog --aspect 40 --backtitle "Atencao" --msgbox "Em Construcao!" 0 0
+	mprin		
+}
+lusp(){
+	dialog --aspect 40 --backtitle "Atencao" --msgbox "Em Construcao!" 0 0
+	mprin		
 }
 login
 
