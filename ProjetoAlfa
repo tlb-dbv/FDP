@@ -5,9 +5,8 @@
 	# 	  Desenvolvedor: Grupo Alfa		#
 	#       Integrantes: Alexandre, Matheus,	#
 	#	   Sayyid, Wilson e Tarcisio		#
-	#	       Professor: Thales		#
-	#	        Disciplina: FDP 		#
-	#                 Data: 01/06/2017		#
+	#	       Consultor: Thales		#
+	#	       Data: 01/06/2017			#
 	#################################################
 login() {
 usuario=alfa
@@ -47,15 +46,16 @@ clear
 
 mhome=$(dialog --stdout --title "Gerenciamento do Sistema"\
 	    --menu "Escolha uma opcao" 0 0 0 	\
-1 "Gerenciar Usuarios"	        \
-2 "Gerenciar Grupos"		\
-3 "Gerenciar Arquivos"		\
-4 "Gerenciar Rede Local"	\
-5 "Gerenciar Dispositivos"	\
-6 "Gerenciar Repositorio"	\
-7 "Gerenciar Permissoes"	\
+1 "Gerenciar Usuarios"	        		\
+2 "Gerenciar Grupos"				\
+3 "Gerenciar Arquivos"				\
+4 "Gerenciar Rede Local"			\
+5 "Gerenciar Dispositivos"			\
+6 "Gerenciar Repositorio"			\
+7 "Gerenciar Permissoes"			\
 8 "Gerenciar Usuarios do Programa"		\
-9 "Sair")
+9 "Creditos"					\
+0 "Sair")
 
 if (( $? != 0 )); then
 	login
@@ -71,7 +71,8 @@ case $mhome in
 6) grpto ;;
 7) gperm ;;
 8) gprgm ;;
-9) clear ;
+9) credi ;;
+0) clear ;
 (
 while :
 do
@@ -1861,6 +1862,17 @@ nacp(){
 }
 lusp(){
 	dialog --aspect 40 --backtitle "Atencao" --msgbox "Em Construcao!" 0 0
+	mprin		
+}
+credi() {
+	dialog --aspect 40 --backtitle "Credito" --msgbox "		Sistema Alfa 1.0\n \
+	Desenvolvedores: Alexandre Andrade - Analista de Sistema\n	    \
+			 Matheus Silveira - Analista de Rede\n		    \
+			 Sayyid Alexandre - Analista de Teste\n		    \
+			 Tarcisio Bezerra - Gerente de Projetos\n	    \
+			 Wilson Rodrigues - Gerente de Marketing\n	    \
+Consultor: Thales Roberto Faggiano					    \	
+Copyright@2017 Senai" 0 0
 	mprin		
 }
 login
